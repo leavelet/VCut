@@ -7,6 +7,7 @@
 ///
 /// 转换为时间，分两种形式，HH:MM:SS或者t(秒)
 ///
+/// HLD 的评价：实现的不太行
 class HMSTime
 {
 public:
