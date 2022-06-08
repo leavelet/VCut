@@ -3,8 +3,8 @@
 matchwidget::matchwidget(QWidget* parent):QWidget(parent)
 {
     cb=new QComboBox(this);
-    cb->addItem("首数字");
     cb->addItem("末数字");
+    cb->addItem("首数字");
     labels[0]=new QLabel("不变动部分",this);
     labels[1]=new QLabel("后缀名",this);
     labels[2]=new QLabel("从",this);

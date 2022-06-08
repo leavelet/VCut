@@ -55,13 +55,31 @@ void Filelist::setconnect()
     int cnt=Qlist->count();
     disconnect(buttonUp,0,this,0);
     disconnect(buttonDown,0,this,0);
-    if(r>0&&r<cnt)
+    if(r>=0&&r<cnt)
     {
-        connect(buttonUp,&QPushButton::clicked,this,&Filelist::upbutton_clicked);
-    }
-    if(r>=0&&r<cnt-1)
-    {
-        connect(buttonDown,&QPushButton::clicked,this,&Filelist::downbutton_clicked);
+        if(r!=0)
+        {
+            buttonUp->setEnabled(true);
+            connect(buttonUp,&QPushButton::clicked,this,&Filelist::upbutton_clicked);
+        }
+        else
+        {
+            buttonUp->setEnabled(false);
+        }
+        if(r!=cnt-1)
+        {
+            buttonDown->setEnabled(true);
+            connect(buttonDown,&QPushButton::clicked,this,&Filelist::downbutton_clicked);
+        }
+        else
+        {
+            buttonDown->setEnabled(false);
+        }
+        listiterator=filelist.begin();
+        for(int i=0;i<r;i++)
+        {
+            listiterator++;
+        }
     }
 }
 void Filelist::removebutton_clicked()

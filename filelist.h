@@ -10,6 +10,7 @@
 #include <QCheckBox>
 #include <QPlainTextEdit>
 #include <QComboBox>
+#include <QResizeEvent>
 
 #include "videoplayer.h"
 #include "filestruct.h"
@@ -37,5 +38,4 @@ public slots:
     void upbutton_clicked();
     void downbutton_clicked();
 };
-
 #endif // FILELIST_H
