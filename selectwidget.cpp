@@ -3,6 +3,7 @@
  * edited by syh
  *
  * 第一窗格左下角的窗体，提供范围匹配和表达式匹配
+ *
  * */
 
 #include "selectwidget.h"

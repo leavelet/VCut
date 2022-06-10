@@ -13,9 +13,13 @@ ChooseFile::ChooseFile(QWidget *parent)
     player = new VideoPlayer(this);
     fileToChoose = new Filelist(this);
     fileImport = new selectwidget(this);
-    chooseLayout->addWidget(player, 0, 1, 8, 10);
-    chooseLayout->addWidget(fileToChoose, 0, 0, 5, 1);
-    chooseLayout->addWidget(fileImport, 5, 0, 3, 1);
+    fileProcessor =  new QSplitter(Qt::Vertical, this);
+
+    fileProcessor->addWidget(fileToChoose);
+    fileProcessor->addWidget(fileImport);
+
+    chooseLayout->addWidget(fileProcessor, 0, 0, 4, 1);
+    chooseLayout->addWidget(player, 0, 1, 4, 3);
     this->setLayout(chooseLayout);
 
     QObject::connect(player, &VideoPlayer::addfile, fileToChoose, [&](){

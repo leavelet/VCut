@@ -40,6 +40,7 @@ set(PROJECT_SOURCES
         matchwidget.h matchwidget.cpp
         filestruct.h filestruct.cpp
         ffmpegwidget.h ffmpegwidget.cpp
+        videoinfo.h videoinfo.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

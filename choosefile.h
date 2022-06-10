@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QSplitter>
 #include "videoplayer.h"
 #include "filelist.h"
 #include "selectwidget.h"
@@ -20,6 +21,7 @@ public:
     Filelist* fileToChoose;
 
 private:
+    QSplitter* fileProcessor;
     QGridLayout* chooseLayout;
 
 };
