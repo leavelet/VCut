@@ -27,6 +27,8 @@ ChooseFile::ChooseFile(QWidget *parent)
         this->player->changeCurrentPlaying(fs);
     });
 
+    fileImport->filelist = fileToChoose;
+
 }
 
 ChooseFile::~ChooseFile(){

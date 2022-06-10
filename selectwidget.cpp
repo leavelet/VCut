@@ -11,6 +11,8 @@
 #include <QDir>
 #include <QRegularExpression>
 #include <QFileInfoList>
+#include <queue>
+#include "filestruct.h"
 
 selectwidget::selectwidget(QWidget* parent):QWidget(parent)
 {
@@ -77,6 +79,8 @@ void selectwidget::import(){
     QDir::setCurrent(videoRoot);
     QDir cur(".");
 
+    std::queue<QString> files;
+
     //if contents not valid, jump to QMessageBox
     bool valid = true;
 
@@ -99,6 +103,7 @@ void selectwidget::import(){
         for(auto x : thisdir){
             if(re.match(x.fileName()).hasMatch()){
                 qDebug() << x.fileName() << Qt::endl;
+                files.push(x.absoluteFilePath());
             }
         }
 
@@ -140,10 +145,15 @@ void selectwidget::import(){
             final += subfix;
             if(cur.exists(final)){
                 qDebug()<<final<<Qt::endl;
+                QString filepath = QDir::cleanPath(cur.absoluteFilePath(final));
+                files.push(filepath);
             }
         }
-
-
+    }
+    while(!files.empty()){
+        FileStruct fs(files.front());
+        filelist->addfile(fs);
+        files.pop();
     }
     empty:
     if(! valid){

@@ -1,4 +1,5 @@
 #include "videoplayer.h"
+
 #include <QtAVPlayer/qavvideoframe.h>
 #include <QPalette>
 

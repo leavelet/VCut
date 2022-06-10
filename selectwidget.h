@@ -24,6 +24,7 @@ public:
     QPushButton* finish, *chooseRoot;
     QResizeEvent* sizeChangd;
     QString videoRoot;
+    Filelist *filelist;
     void resizeEvent(QResizeEvent *sizeChangd);
     selectwidget(QWidget* parent);
     ~selectwidget();
