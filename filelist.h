@@ -6,11 +6,11 @@
 #include <QTime>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QLabel>
 #include <QCheckBox>
 #include <QPlainTextEdit>
 #include <QComboBox>
-#include <QResizeEvent>
 
 #include "videoplayer.h"
 #include "filestruct.h"
@@ -25,7 +25,8 @@ public:
     QListWidget *Qlist;
     QGridLayout *topLayout;
     QHBoxLayout *topText;
-    QPushButton *buttonRemove, *buttonUp, *buttonDown;
+    QPushButton *buttonRemove, *buttonUp, *buttonDown, *buttonClear, *buttonCopy;
+    QHBoxLayout *buttonLayout;
     Filelist(QWidget* parent);
     ~Filelist();
     std::list<FileStruct> filelist;
@@ -37,5 +38,8 @@ public slots:
     //void addbutton_clicked();
     void upbutton_clicked();
     void downbutton_clicked();
+    void clearbutton_clicked();
+    void copybutton_clicked();
 };
+
 #endif // FILELIST_H

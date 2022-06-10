@@ -3,7 +3,8 @@
 */
 
 #include "filelist.h"
-
+#include <QApplication>
+#include <QClipboard>
 #include "getfile.h"
 Filelist::Filelist(QWidget* parent):QWidget(parent)
 {
@@ -13,21 +14,30 @@ Filelist::Filelist(QWidget* parent):QWidget(parent)
     buttonRemove = new QPushButton("-",this);
     buttonUp=new QPushButton("↑",this);
     buttonDown=new QPushButton("↓",this);
+    buttonClear=new QPushButton("clear",this);
+    buttonCopy=new QPushButton("copy",this);
     Qlist->setSortingEnabled(false);
 
     connect(buttonRemove,&QPushButton::clicked,this,&Filelist::removebutton_clicked);
     connect(Qlist,&QListWidget::currentRowChanged,this,&Filelist::setconnect);
+    connect(buttonClear,&QPushButton::clicked,this,&Filelist::clearbutton_clicked);
+    connect(buttonCopy,&QPushButton::clicked,this,&Filelist::copybutton_clicked);
 
     topText = new QHBoxLayout();
     topText->addWidget(label);
     topText->addWidget(mergeOrSingle);
 
+    buttonLayout=new QHBoxLayout();
+    buttonLayout->addWidget(buttonUp);
+    buttonLayout->addWidget(buttonDown);
+    buttonLayout->addWidget(buttonRemove);
+    buttonLayout->addWidget(buttonCopy);
+    buttonLayout->addWidget(buttonClear);
+
     topLayout = new QGridLayout(this);
-    topLayout->addLayout(topText, 0, 0, 1, 4);
-    topLayout->addWidget(Qlist, 1, 0, 10, 4);
-    topLayout->addWidget(buttonUp, 11, 0, 1, 1);
-    topLayout->addWidget(buttonDown, 11, 1, 1, 1);
-    topLayout->addWidget(buttonRemove, 11, 2, 1, 1);
+    topLayout->addLayout(topText, 0, 0, 1, 1);
+    topLayout->addWidget(Qlist, 1, 0, 10, 1);
+    topLayout->addLayout(buttonLayout,11,0,1,1);
 }
 void Filelist::addfile(FileStruct s)
 {
@@ -138,4 +148,28 @@ void Filelist::downbutton_clicked()
     listiterator--;
     (*i)=(*listiterator);
     (*listiterator)=temp;
+}
+void Filelist::clearbutton_clicked()
+{
+    int cnt=Qlist->count();
+    for(int i=0;i<cnt;i++)
+    {
+        delete Qlist->takeItem(0);
+    }
+    filelist.clear();
+}
+void Filelist::copybutton_clicked()
+{
+    qDebug()<<(*listiterator).filename;
+    int r=Qlist->currentRow();
+    int cnt=Qlist->count();
+    qDebug()<<r<<cnt;
+    if(r>=0&&r<cnt)
+    {
+        QListWidgetItem* item_new=new QListWidgetItem(Qlist->item(r)->text());
+        Qlist->insertItem(r+1,item_new);
+        FileStruct file=*listiterator;
+        filelist.insert(listiterator,file);
+        Qlist->setCurrentRow(r+1);
+    }
 }
