@@ -91,7 +91,6 @@ void Filelist::setconnect()
             listiterator++;
         }
     }
-    qDebug()<<(*listiterator).filename;
 }
 void Filelist::removebutton_clicked()
 {
@@ -161,14 +160,16 @@ void Filelist::clearbutton_clicked()
 }
 void Filelist::copybutton_clicked()
 {
+    qDebug()<<(*listiterator).filename;
     int r=Qlist->currentRow();
     int cnt=Qlist->count();
+    qDebug()<<r<<cnt;
     if(r>=0&&r<cnt)
     {
         QListWidgetItem* item_new=new QListWidgetItem(Qlist->item(r)->text());
         Qlist->insertItem(r+1,item_new);
-        Qlist->setCurrentRow(r+1);
         FileStruct file=*listiterator;
         filelist.insert(listiterator,file);
+        Qlist->setCurrentRow(r+1);
     }
 }
