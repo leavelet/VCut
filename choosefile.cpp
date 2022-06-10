@@ -17,6 +17,9 @@ ChooseFile::ChooseFile(QWidget *parent)
 
     fileProcessor->addWidget(fileToChoose);
     fileProcessor->addWidget(fileImport);
+    QPalette p=fileProcessor->palette();
+    p.setColor(QPalette::Window,QColor(25,155,245,100));
+    fileProcessor->setPalette(p);
 
     chooseLayout->addWidget(fileProcessor, 0, 0, 4, 1);
     chooseLayout->addWidget(player, 0, 1, 4, 3);
