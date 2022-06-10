@@ -12,6 +12,7 @@
 #include <QDialog>
 
 #include "matchwidget.h"
+#include "filelist.h"
 class selectwidget:public QWidget
 {
 public:

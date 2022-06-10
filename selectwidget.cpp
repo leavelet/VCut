@@ -1,18 +1,28 @@
+/*
+ * created by hxz
+ * edited by syh
+ *
+ * 第一窗格左下角的窗体，提供范围匹配和表达式匹配
+ * */
+
 #include "selectwidget.h"
 #include <cmath>
 #include <QMessageBox>
 #include <QDir>
+#include <QRegularExpression>
+#include <QFileInfoList>
 
 selectwidget::selectwidget(QWidget* parent):QWidget(parent)
 {
     cb=new QComboBox(this);
     cb->addItem("数字匹配");
-    cb->addItem("正则表达式");
+    cb->addItem("表达式匹配");
     sunWidget = new QWidget(this);
     finish = new QPushButton("导入文件列表",this);
     chooseRoot = new QPushButton("选择文件目录", this);
     widget1=new matchwidget(sunWidget);
     widget2=new QPlainTextEdit(sunWidget);
+    widget2->setPlaceholderText("默认是操作系统匹配(如*.mp4)\n如果想使用regex，请以~开头(开头的~将被忽略)");
     widget2->hide();
     videoRoot = "";
     thislayout=new QGridLayout(this);
@@ -56,19 +66,41 @@ void selectwidget::resizeEvent(QResizeEvent* sizeChangd){
 
 
 //syh, version 1, June 8
-//the slot for click import
+//syh, edited on June 10
+//the slot for importing files to filelist
 void selectwidget::import(){
-    bool valid = true;
+    //must choose the dir to import from first
     if(videoRoot == ""){
         QMessageBox::warning(this, "错误", "请先选择文件目录！");
         return;
     }
-    QDir::setCurrent("videoRoot");
-    if(cb->currentIndex() == 1){
+    QDir::setCurrent(videoRoot);
+    QDir cur(".");
+
+    //if contents not valid, jump to QMessageBox
+    bool valid = true;
+
+    if(cb->currentIndex()){
         if(widget2->toPlainText().isEmpty()){
             valid = false;
+            goto empty;
         }
-
+        QString exp = widget2->toPlainText();
+        QRegularExpression re;
+        if(exp[0] != '~'){
+            re = QRegularExpression::fromWildcard(exp);
+        }
+        else{
+            exp.erase(exp.begin(), exp.begin()+1);
+            qDebug() << exp << Qt::endl;
+            re.setPattern(exp);
+        }
+        QFileInfoList thisdir = cur.entryInfoList(QDir::Files, QDir::Name);
+        for(auto x : thisdir){
+            if(re.match(x.fileName()).hasMatch()){
+                qDebug() << x.fileName() << Qt::endl;
+            }
+        }
 
     }
     else{
@@ -97,15 +129,18 @@ void selectwidget::import(){
             QString final = "";
             //末数字
             if(widget1->cb->currentIndex() == 0){
-                final = QDir::cleanPath(stable + QDir::separator() + movable);
+                final = stable + movable;
             }
             else{
-                final = QDir::cleanPath(stable + QDir::separator() + movable);
+                final = movable + stable;
             }
             if(subfix[0] != '.'){
                 final.push_back('.');
             }
             final += subfix;
+            if(cur.exists(final)){
+                qDebug()<<final<<Qt::endl;
+            }
         }
 
 

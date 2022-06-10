@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
         selectwidget.h selectwidget.cpp
         matchwidget.h matchwidget.cpp
         filestruct.h filestruct.cpp
+        ffmpegwidget.h ffmpegwidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
