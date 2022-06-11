@@ -18,6 +18,13 @@ Filelist::Filelist(QWidget* parent):QWidget(parent)
     buttonCopy=new QPushButton("copy",this);
     Qlist->setSortingEnabled(false);
 
+    buttonUp->setEnabled(false);
+    buttonDown->setEnabled(false);
+    buttonRemove->setEnabled(false);
+    buttonClear->setEnabled(false);
+    buttonCopy->setEnabled(false);
+    connect(buttonUp,&QPushButton::clicked,this,&Filelist::upbutton_clicked);
+    connect(buttonDown,&QPushButton::clicked,this,&Filelist::downbutton_clicked);
     connect(buttonRemove,&QPushButton::clicked,this,&Filelist::removebutton_clicked);
     connect(Qlist,&QListWidget::currentRowChanged,this,&Filelist::setconnect);
     connect(buttonClear,&QPushButton::clicked,this,&Filelist::clearbutton_clicked);
@@ -43,34 +50,29 @@ void Filelist::addfile(FileStruct s)
 {
 
     filelist.push_back(s);
-    listiterator=filelist.end();
     QListWidgetItem* item_new=new QListWidgetItem(s.filename);
     item_new->setFlags(Qt::ItemIsEnabled|Qt::ItemIsEditable|Qt::ItemIsSelectable);
     Qlist->addItem(item_new);
-    Qlist->setCurrentRow(Qlist->count());
 }
 Filelist::~Filelist()
 {
-    delete buttonRemove;
-    /*
-    delete button2;
-    button2=NULL;
-    */
-    delete buttonUp;
-    delete buttonDown;
+    //delete buttonRemove;
+    //delete button2;
+    //button2=NULL;
+
+    //delete buttonUp;
+    //delete buttonDown;
+    delete topLayout;
 }
 void Filelist::setconnect()
 {
     int r=Qlist->currentRow();
     int cnt=Qlist->count();
-    disconnect(buttonUp,0,this,0);
-    disconnect(buttonDown,0,this,0);
     if(r>=0&&r<cnt)
     {
         if(r!=0)
         {
             buttonUp->setEnabled(true);
-            connect(buttonUp,&QPushButton::clicked,this,&Filelist::upbutton_clicked);
         }
         else
         {
@@ -79,17 +81,27 @@ void Filelist::setconnect()
         if(r!=cnt-1)
         {
             buttonDown->setEnabled(true);
-            connect(buttonDown,&QPushButton::clicked,this,&Filelist::downbutton_clicked);
         }
         else
         {
             buttonDown->setEnabled(false);
         }
+        buttonRemove->setEnabled(true);
+        buttonClear->setEnabled(true);
+        buttonCopy->setEnabled(true);
         listiterator=filelist.begin();
         for(int i=0;i<r;i++)
         {
             listiterator++;
         }
+    }
+    else
+    {
+        buttonUp->setEnabled(false);
+        buttonDown->setEnabled(false);
+        buttonRemove->setEnabled(false);
+        buttonClear->setEnabled(false);
+        buttonCopy->setEnabled(false);
     }
 }
 void Filelist::removebutton_clicked()
