@@ -42,11 +42,8 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     QObject::connect(muteBtn, &QCheckBox::stateChanged, this, &VideoPlayer::mute);
     QObject::connect(player, &QAVPlayer::audioFrame, player, [this](const QAVAudioFrame &frame) { this->audioOutput.play(frame); });
     QObject::connect(player, &QAVPlayer::videoFrame, player, [this](const QAVVideoFrame &frame) {
-        QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_YUV420P);
-        videoFrame.toImage().save("frame.jpg");
-        qDebug() << videoFrame.pixelFormat() << Qt::endl;
-        qDebug() << videoFrame.isValid() << Qt::endl;
-        this->videoWidget->videoSink()->setVideoFrame(videoFrame);
+//        QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_RGB32);
+        this->videoWidget->videoSink()->setVideoFrame(frame);
     });
     //it seems there are no mistakes
     QObject::connect(addToList, &QPushButton::clicked, [this](){emit addfile();});
