@@ -24,6 +24,8 @@
 #include <QTime>
 #include <QVideoSink>
 #include <QGraphicsScene>
+#include <QLabel>
+#include <QString>
 
 #include "getfile.h"
 #include "filestruct.h"
@@ -35,6 +37,7 @@ public:
     explicit VideoPlayer(QWidget *parent = Q_NULLPTR);
     ~VideoPlayer();
     QTime begtime, endtime;
+    int total_time;
     QString filename = "";
     void changeCurrentPlaying(FileStruct file);
 
@@ -43,12 +46,13 @@ private:
     QAVPlayer* player;
     QVideoWidget* videoWidget;
     QPushButton *changeState, *addToList;
-    QCheckBox *setVolume, *preciseAdjust;
+    QCheckBox *setVolume, *preciseAdjust, *muteBtn;
     QSlider *timeSlider;
     QHBoxLayout *settingsLayout;
     QGridLayout *totalLayout;
     getFile *fileChoose;
     QAVAudioOutput audioOutput;
+    QLabel *currentTime;
 
 signals:
     void timeChanged();
@@ -57,6 +61,10 @@ signals:
 public slots:
     void open();
     void playPauseSwitch();
+    void changeTime();
+    void precise_changeTime();
+    void mute();
+
 
 };
 
