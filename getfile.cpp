@@ -1,4 +1,6 @@
 #include "getfile.h"
+#include <QFileInfo>
+#include <QMessageBox>
 
 getFile::getFile(QWidget *parent)
     : QWidget{parent}
@@ -9,6 +11,8 @@ getFile::getFile(QWidget *parent)
     layout->addWidget(pushbutton);
     layout->addWidget(fl);
     connect(pushbutton,&QPushButton::clicked,this,&getFile::pushButton_clicked);
+    connect(fl,&QLineEdit::returnPressed,this,&getFile::editFinish);
+    connect(fl,&FileLine::changed,this,&getFile::fileChanged);
 }
 getFile::~getFile()
 {
@@ -20,4 +24,18 @@ void getFile::pushButton_clicked()
     fl->setText(path);
     fl->Filepath=path;
     emit fileChanged();
+}
+void getFile::editFinish()
+{
+    QString name=fl->text();
+    QFileInfo inputFile(name);
+    if(inputFile.isFile())
+    {
+        fl->Filepath=name;
+        emit fileChanged();
+    }
+    else
+    {
+        QMessageBox::warning(this,"Error","Please input a valid file.");
+    }
 }

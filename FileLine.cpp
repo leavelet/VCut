@@ -37,4 +37,5 @@ void FileLine::dropEvent(QDropEvent* e)
         path=e->mimeData()->text().replace("file://","");
     setText(path);
     Filepath=path;
+    emit changed();
 }
