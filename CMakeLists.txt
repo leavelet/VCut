@@ -42,7 +42,8 @@ set(PROJECT_SOURCES
         ffmpegwidget.h ffmpegwidget.cpp
         videoinfo.h videoinfo.cpp
         AbstructOption.h
-        ffoptions.h ffoptions.cpp
+        ffoptions.h
+        FFOptionsCombo.cpp FFOptionsCheck.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
