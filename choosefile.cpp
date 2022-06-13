@@ -30,8 +30,10 @@ ChooseFile::ChooseFile(QWidget *parent)
         fileToChoose->addfile(tmp);
     });
     QObject::connect(fileToChoose->Qlist, &QListWidget::currentRowChanged, this, [this](){
-        FileStruct fs(*fileToChoose->listiterator);
-        this->player->changeCurrentPlaying(fs);
+        if(!fileToChoose->filelist.empty() && fileToChoose->listiterator != fileToChoose->filelist.end()) {
+            FileStruct fs(*fileToChoose->listiterator);
+            this->player->changeCurrentPlaying(fs);
+        }
     });
 
     fileImport->filelist = fileToChoose;
