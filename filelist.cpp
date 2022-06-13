@@ -68,6 +68,7 @@ void Filelist::setconnect()
 {
     int r=Qlist->currentRow();
     int cnt=Qlist->count();
+    qDebug()<<r<<cnt;
     if(r>=0&&r<cnt)
     {
         if(r!=0)
@@ -110,10 +111,13 @@ void Filelist::removebutton_clicked()
     int cnt=Qlist->count();
     if(r>=0&&r<cnt)
     {
+        //QListWidgetItem* deleteditem =Qlist->takeItem(r);
+        //delete deleteditem;
         delete Qlist->takeItem(r);
+        Qlist->setCurrentRow(-1);
         filelist.erase(listiterator);
     }
-    Qlist->setCurrentRow(cnt);
+
     if(!filelist.empty())
         listiterator=filelist.end();
 }
@@ -172,10 +176,8 @@ void Filelist::clearbutton_clicked()
 }
 void Filelist::copybutton_clicked()
 {
-    qDebug()<<(*listiterator).filename;
     int r=Qlist->currentRow();
     int cnt=Qlist->count();
-    qDebug()<<r<<cnt;
     if(r>=0&&r<cnt)
     {
         QListWidgetItem* item_new=new QListWidgetItem(Qlist->item(r)->text());
