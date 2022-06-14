@@ -45,6 +45,7 @@ set(PROJECT_SOURCES
         ffoptions.h
         FFOptionsCombo.cpp FFOptionsCheck.cpp
         inputdialog.h inputdialog.cpp
+        presetsaveread.h presetsaveread.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

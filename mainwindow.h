@@ -9,6 +9,7 @@
 #include <QPushButton>
 
 #include "choosefile.h"
+#include "ffmpegwidget.h"
 
 
 class MainWindow : public QMainWindow
@@ -24,7 +25,8 @@ public:
     ~MainWindow();
 
 private:
-    QWidget *TabSetFFmpeg, *TabMore;
+    QWidget *TabMore;
+    ffmpegWidget* TabSetFFmpeg;
     ChooseFile* TabChoseFile;
     QVBoxLayout *topLayout;
 signals:
