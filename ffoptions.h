@@ -14,6 +14,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
+#include <set>
+
 using std::pair;
 using std::vector;
 
@@ -30,13 +32,14 @@ public:
 
     vector<QString> display_name;
     vector<pair<bool, QString>> commands;
-
+    std::set<int> customAdd;
 
     virtual QString getCommand();
     virtual QString setInside(int now = 0);
 
     void addCustomItem();
     void addItem(bool fromBase, QString display, QString command);
+
 };
 
 

@@ -44,6 +44,7 @@ set(PROJECT_SOURCES
         AbstructOption.h
         ffoptions.h
         FFOptionsCombo.cpp FFOptionsCheck.cpp
+        inputdialog.h inputdialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
