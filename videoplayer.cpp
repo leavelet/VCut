@@ -3,6 +3,7 @@
 #include <QPalette>
 #include <QString>
 #include <QDebug>
+#include <QImage>
 
 VideoPlayer::VideoPlayer(QWidget *parent)
     : QWidget{parent}
@@ -42,8 +43,42 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     QObject::connect(muteBtn, &QCheckBox::stateChanged, this, &VideoPlayer::mute);
     QObject::connect(player, &QAVPlayer::audioFrame, player, [this](const QAVAudioFrame &frame) { this->audioOutput.play(frame); });
     QObject::connect(player, &QAVPlayer::videoFrame, player, [this](const QAVVideoFrame &frame) {
-//        QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_RGB32);
-        this->videoWidget->videoSink()->setVideoFrame(frame);
+      QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_VIDEOTOOLBOX);
+//      QImage::Format image_format = QImage::Format_RGB32;
+//     int plane = 0;
+//      QImage image(videoFrame.bits(plane), videoFrame.width(),videoFrame.height(), image_format);
+//        videoFrame.unmap();
+//        qDebug() << videoFrame.textureHandle(0) << Qt::endl;
+        this->videoWidget->videoSink()->setVideoFrame(videoFrame);
+//      videoFrame.toImage().save("frame.png");
+        /*
+         *
+
+
+    if(frame.isNull()){
+        qWarning() << "receive Image is not valid  not writable";
+        return;
+    }
+    if(!video_frame.isValid() || !video_frame.map(QVideoFrame::WriteOnly)){
+        qWarning() << "QVideoFrame is not valid or not writable";
+        return;
+    }
+    QImage::Format image_format = QImage::Format_RGB32;
+    if(image_format == QImage::Format_Invalid){
+        qWarning() << "It is not possible to obtain image format from the pixel format of the videoframe";
+        return;
+    }
+    int plane = 0;
+    QImage image(video_frame.bits(plane), video_frame.width(),video_frame.height(), image_format);
+//    if(image.loadFromData((uchar*)recv_arr.data(),len)){
+//        qWarning() << "load";
+//    }
+    QPainter painter(&image);
+    painter.drawImage(QPoint(0,0),frame);
+    painter.end();
+    video_frame.unmap();
+    m_videoSink->setVideoFrame(video_frame);
+*/
     });
     //it seems there are no mistakes
     QObject::connect(addToList, &QPushButton::clicked, [this](){emit addfile();});
