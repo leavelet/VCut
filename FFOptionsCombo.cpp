@@ -1,9 +1,21 @@
 #include "ffoptions.h"
 #include "inputdialog.h"
 
-FFOptionsCombo::FFOptionsCombo(QString name, QString _base, QString _hint, QWidget* parent):
-    AbstructOption(parent), baseCommand(_base), hint(_hint), sum(2)
+FFOptionsCombo::FFOptionsCombo(QWidget* parent):
+    AbstructOption(COMBO, parent), sum(2)
 {
+}
+FFOptionsCombo::FFOptionsCombo(QString name, QString _base, QString _hint, QWidget* parent):
+    AbstructOption(COMBO, parent), baseCommand(_base), hint(_hint), sum(2), name(name)
+{
+    init();
+}
+
+FFOptionsCombo::~FFOptionsCombo(){
+    delete layout;
+}
+
+void FFOptionsCombo::init(){
     text = new QLabel(this);
     chooseList = new QComboBox(this);
     chooseList->addItem("自动");//0
@@ -74,4 +86,42 @@ QString FFOptionsCombo::setInside(int x){
     if(x > sum) chooseList->setCurrentIndex(0);
     else chooseList->setCurrentIndex(x);
     return commands[x].second;
+}
+
+int FFOptionsCombo::getCurrentState(){
+    return chooseList->currentIndex();
+}
+
+void FFOptionsCombo::read(const QJsonObject &json){
+    if (json.contains("name") && json["name"].isString())
+        name = json["name"].toString();
+    if (json.contains("baseCommand") && json["baseCommand"].isString())
+        baseCommand = json["baseCommand"].toString();
+    if (json.contains("hint") && json["hint"].isString())
+        hint = json["hint"].toString();
+    init();
+    if (json.contains("commands") && json["commands"].isArray()) {
+        QJsonArray optionArray = json["commands"].toArray();
+        for (int Index = 0; Index < optionArray.size(); ++Index) {
+            QJsonObject optionObject = optionArray[Index].toObject();
+            if(    optionObject.contains("isBase") && json["isBase"].isBool()
+                && optionObject.contains("command") && json["command"].isString()
+                && optionObject.contains("display") && json["display"].isString())
+                addItem(json["isBase"].toBool(), json["display"].toString(), json["command"].toString());
+        }
+    }
+}
+void FFOptionsCombo::write(const QJsonObject &json){
+    json["name"] = name;
+    json["baseCommand"] = baseCommand;
+    json["hint"] = hint;
+    QJsonArray optionArray;
+    for(int i = 2; i < sum; i++){
+        QJsonObject item;
+        item["display"] = display_name[i];
+        item["isBase"] = commands[i].first;
+        item["command"] = commands[i].second;
+        optionArray.append(item);
+    }
+    json["commands"] = optionArray;
 }
