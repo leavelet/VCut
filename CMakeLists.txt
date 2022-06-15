@@ -41,6 +41,11 @@ set(PROJECT_SOURCES
         filestruct.h filestruct.cpp
         ffmpegwidget.h ffmpegwidget.cpp
         videoinfo.h videoinfo.cpp
+        AbstructOption.h
+        ffoptions.h
+        FFOptionsCombo.cpp FFOptionsCheck.cpp
+        inputdialog.h inputdialog.cpp
+        presetsaveread.h presetsaveread.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

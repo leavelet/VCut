@@ -24,6 +24,7 @@ bool iswindows();
 
 class FileLine : public QLineEdit
 {
+    Q_OBJECT
 public:
     QString Filepath;
     FileLine(QWidget *parent);

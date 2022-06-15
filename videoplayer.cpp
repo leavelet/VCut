@@ -3,6 +3,7 @@
 #include <QPalette>
 #include <QString>
 #include <QDebug>
+#include <QImage>
 
 VideoPlayer::VideoPlayer(QWidget *parent)
     : QWidget{parent}

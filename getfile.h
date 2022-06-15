@@ -19,6 +19,7 @@ public:
     ~getFile();
 public slots:
     void pushButton_clicked();
+    void editFinish();
 signals:
     void fileChanged();
 
