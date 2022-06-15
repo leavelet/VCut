@@ -4,6 +4,7 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     : QWidget{parent}
 {
     topLayout = new QGridLayout(this);
+    /*
     presetLayout = new QGridLayout;
     filterLayout = new QGridLayout;
     finalCommandLayout = new QGridLayout;
@@ -15,6 +16,7 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
 
     commandsWidget = new QWidget(this);
     commandLayout = new QGridLayout(commandsWidget);
+    */
 
     savePreset = new QPushButton("保存预设", this);
     loadPreset = new QPushButton("读取预设",this);
@@ -46,6 +48,7 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     noVideo = new FFOptionsCheck("无视频","-vn", "", 0,this);options.push_back(noVideo);
     noAudio = new FFOptionsCheck("无音频","-an","", 0, this);options.push_back(noAudio);
 
+    /*
     fileChooseLayout->addWidget(fileComboText);
     fileChooseLayout->addWidget(fileToChoose);
 
@@ -89,7 +92,86 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     topLayout->addWidget(commandsWidget, 2, 0, 5, 1);
     topLayout->addLayout(finalCommandLayout, 7, 0, 2, 1);
     topLayout->addWidget(generateFinalCommand, 9, 0, 1, 1);
+    */
 
+    topLayout->addWidget(presetText,0,0,1,2);
+    topLayout->addWidget(presetToChoose, 0, 2, 1, 6);
+    topLayout->addWidget(savePreset, 0, 8, 1, 1);
+    topLayout->addWidget(loadPreset, 0, 9, 1, 1);
+    topLayout->addWidget(fileComboText,1,0,1,2);
+    topLayout->addWidget(fileToChoose,1,2,1,6);
+    //topLayout->addWidget(commandsWidget, 2, 0, 5, 1);
+
+    topLayout->addWidget(outputFormat,2,0,1,2);
+    topLayout->addWidget(remix,2,2,1,2);
+    topLayout->addWidget(optimizedForWeb,2,4,1,2);
+
+    topLayout->addWidget(noVideo,3,0,1,2);
+    topLayout->addWidget(videoQuailty,3,2,1,2);
+    topLayout->addWidget(videoCodec,3,4,1,2);
+    topLayout->addWidget(frameRate,3,6,1,2);
+    topLayout->addWidget(videoBitRate,3,8,1,2);
+
+    topLayout->addWidget(noAudio,4,0,1,2);
+    topLayout->addWidget(stero,4,2,1,2);
+    topLayout->addWidget(audioQuality,4,4,1,2);
+    topLayout->addWidget(audioCodec,4,6,1,2);
+
+    topLayout->addWidget(videoRotation,5,0,1,2);
+
+    topLayout->addWidget(filter, 6, 0, 1, 6);
+    topLayout->addWidget(filterLine, 6, 6, 1, 4);
+
+    topLayout->addWidget(finalCommandText, 7, 0, 1, 2);
+    topLayout->addWidget(finalCommand, 8, 0, 3, 10);
+    topLayout->addWidget(generateFinalCommand, 9, 0, 1, 1);
+
+    connect(noVideo->box,&QCheckBox::stateChanged,this,[this]()
+    {
+        if(noVideo->box->isChecked())
+        {
+            videoQuailty->setEnabled(false);
+            videoCodec->setEnabled(false);
+            frameRate->setEnabled(false);
+            videoBitRate->setEnabled(false);
+            videoQuailty->setVisible(false);
+            videoCodec->setVisible(false);
+            frameRate->setVisible(false);
+            videoBitRate->setVisible(false);
+        }
+        else
+        {
+            videoQuailty->setEnabled(true);
+            videoCodec->setEnabled(true);
+            frameRate->setEnabled(true);
+            videoBitRate->setEnabled(true);
+            videoQuailty->setVisible(true);
+            videoCodec->setVisible(true);
+            frameRate->setVisible(true);
+            videoBitRate->setVisible(true);
+        }
+    });
+    connect(noAudio->box,&QCheckBox::stateChanged,this,[this]()
+    {
+        if(noAudio->box->isChecked())
+        {
+            stero->setEnabled(false);
+            audioQuality->setEnabled(false);
+            audioCodec->setEnabled(false);
+            stero->setVisible(false);
+            audioQuality->setVisible(false);
+            audioCodec->setVisible(false);
+        }
+        else
+        {
+            stero->setEnabled(true);
+            audioQuality->setEnabled(true);
+            audioCodec->setEnabled(true);
+            stero->setVisible(true);
+            audioQuality->setVisible(true);
+            audioCodec->setVisible(true);
+        }
+    });
 }
 
 void ffmpegWidget::loadFromFile(QString Filename){
