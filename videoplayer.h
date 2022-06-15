@@ -36,23 +36,25 @@ class VideoPlayer : public QWidget
 public:
     explicit VideoPlayer(QWidget *parent = Q_NULLPTR);
     ~VideoPlayer();
-    QTime begtime, endtime;
+    QTime begtime,endtime;
     int total_time;
     QString filename = "";
     void changeCurrentPlaying(FileStruct file);
+    void setCurrentTime(qint64 t);
 
 private:
 
     QAVPlayer* player;
     QVideoWidget* videoWidget;
     QPushButton *changeState, *addToList;
-    QCheckBox *setVolume, *preciseAdjust, *muteBtn;
+    QCheckBox *setVolume, *muteBtn;
     QSlider *timeSlider;
     QHBoxLayout *settingsLayout;
     QGridLayout *totalLayout;
     getFile *fileChoose;
     QAVAudioOutput audioOutput;
     QLabel *currentTime;
+    QTimer *timer;
 
 signals:
     void timeChanged();
@@ -62,8 +64,8 @@ public slots:
     void open();
     void playPauseSwitch();
     void changeTime();
-    void precise_changeTime();
     void mute();
+    void updateTime();
 
 
 };
