@@ -1,4 +1,8 @@
 #include "ffmpegwidget.h"
+#include "QFile"
+#include "QJsonDocument"
+#include "QJsonObject"
+#include "QJsonArray"
 
 ffmpegWidget::ffmpegWidget(QWidget *parent)
     : QWidget{parent}
@@ -172,13 +176,52 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
             audioCodec->setVisible(true);
         }
     });
+    connect(savePreset,&QPushButton::clicked,this,&ffmpegWidget::save);
 }
 
 void ffmpegWidget::loadFromFile(QString Filename){
 
 }
 void ffmpegWidget::saveToFile(QString Filename){
-
+    outputFormat->write(outputFormat->obj);
+    videoQuailty->write(videoQuailty->obj);
+    videoCodec->write(videoCodec->obj);
+    frameRate->write(frameRate->obj);
+    videoBitRate->write(videoBitRate->obj);
+    audioQuality->write(audioQuality->obj);
+    audioCodec->write(audioCodec->obj);
+    videoRotation->write(videoRotation->obj);
+    filter->write(filter->obj);
+    remix->write(remix->obj);
+    optimizedForWeb->write(optimizedForWeb->obj);
+    stero->write(stero->obj);
+    noVideo->write(noVideo->obj);
+    noAudio->write(noAudio->obj);
+    QJsonObject jsonObj;
+    jsonObj.insert("test","testvalue");
+    jsonObj["输出格式"]=outputFormat->obj;
+    jsonObj["视频分辨率"]=videoQuailty->obj;
+    jsonObj["编码器"]=videoCodec->obj;
+    jsonObj["帧速率(格式为数字)"]=frameRate->obj;
+    jsonObj["帧速率(格式为数量+单位)"]=videoBitRate->obj;
+    jsonObj["音频采样率"]=audioQuality->obj;
+    jsonObj["音频编码器"]=audioCodec->obj;
+    jsonObj["视频旋转"]=videoRotation->obj;
+    jsonObj["滤镜"]=filter->obj;
+    jsonObj["仅复制"]=remix->obj;
+    jsonObj["为流传输优化"]=optimizedForWeb->obj;
+    jsonObj["立体声"]=stero->obj;
+    jsonObj["无视频"]=noVideo->obj;
+    jsonObj["无音频"]=noAudio->obj;
+    QJsonDocument doc(jsonObj);
+    QByteArray data=doc.toJson();
+    QFile file(Filename);
+    bool flag=file.open(QIODevice::WriteOnly);
+    if(flag)
+    {
+        file.write(data);
+        file.close();
+    }
 }
 void ffmpegWidget::generate(){
 
@@ -189,5 +232,5 @@ void ffmpegWidget::Load(){
 }
 
 void ffmpegWidget::save(){
-
+    this->saveToFile("./preset.json");
 }
