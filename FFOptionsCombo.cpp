@@ -29,8 +29,8 @@ void FFOptionsCombo::init(){
 
     text->setText(name);
 
-    layout->addWidget(text);
-    layout->addWidget(chooseList);
+    layout->addWidget(text,1);
+    layout->addWidget(chooseList,10);
 
     connect(chooseList, &QComboBox::currentIndexChanged, this, [this](){
         int cnt = chooseList->currentIndex();

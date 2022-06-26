@@ -21,6 +21,11 @@ ChooseFile::ChooseFile(QWidget *parent)
     p.setColor(QPalette::Window,QColor(25,155,245,100));
     fileProcessor->setPalette(p);
 
+    QList<int> splitlist(2);
+    splitlist[0]=3*height();
+    splitlist[1]=2*height();
+    fileProcessor->setSizes(splitlist);
+
     chooseLayout->addWidget(fileProcessor, 0, 0, 4, 1);
     chooseLayout->addWidget(player, 0, 1, 4, 3);
     this->setLayout(chooseLayout);
