@@ -3,6 +3,8 @@
 #include "QJsonDocument"
 #include "QJsonObject"
 #include "QJsonArray"
+#include "QJsonParseError"
+#include "QMessageBox"
 
 ffmpegWidget::ffmpegWidget(QWidget *parent)
     : QWidget{parent}
@@ -177,10 +179,89 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
         }
     });
     connect(savePreset,&QPushButton::clicked,this,&ffmpegWidget::save);
+    num=1;
+    currentnum=1;
+    connect(loadPreset,&QPushButton::clicked,this,&ffmpegWidget::Load);
 }
 
 void ffmpegWidget::loadFromFile(QString Filename){
-
+    QFile file(Filename);
+    bool flag=file.open(QIODevice::ReadOnly);
+    if(flag)
+    {
+        QByteArray data=file.readAll();
+        file.close();
+        QJsonParseError parseError;
+        QJsonDocument doc=QJsonDocument::fromJson(data,&parseError);
+        if(parseError.error==QJsonParseError::NoError)
+        {
+            QJsonObject jsonObj=doc.object();
+            if(jsonObj.contains("输出格式"))
+            {
+                outputFormat->read(jsonObj.value("输出格式").toObject());
+            }
+            if(jsonObj.contains("视频分辨率"))
+            {
+                videoQuailty->read(jsonObj.value("视频分辨率").toObject());
+            }
+            if(jsonObj.contains("编码器"))
+            {
+                videoCodec->read(jsonObj.value("编码器").toObject());
+            }
+            if(jsonObj.contains("帧速率(格式为数字)"))
+            {
+                frameRate->read(jsonObj.value("帧速率(格式为数字)").toObject());
+            }
+            if(jsonObj.contains("帧速率(格式为数量+单位)"))
+            {
+                videoBitRate->read(jsonObj.value("帧速率(格式为数量+单位)").toObject());
+            }
+            if(jsonObj.contains("音频采样率"))
+            {
+                audioQuality->read(jsonObj.value("音频采样率").toObject());
+            }
+            if(jsonObj.contains("音频编码器"))
+            {
+                audioCodec->read(jsonObj.value("音频编码器").toObject());
+            }
+            if(jsonObj.contains("视频旋转"))
+            {
+                videoRotation->read(jsonObj.value("视频旋转").toObject());
+            }
+            if(jsonObj.contains("滤镜"))
+            {
+                filter->read(jsonObj.value("滤镜").toObject());
+            }
+            if(jsonObj.contains("仅复制"))
+            {
+                remix->read(jsonObj.value("仅复制").toObject());
+            }
+            if(jsonObj.contains("为流传输优化"))
+            {
+                optimizedForWeb->read(jsonObj.value("为流传输优化").toObject());
+            }
+            if(jsonObj.contains("立体声"))
+            {
+                stero->read(jsonObj.value("立体声").toObject());
+            }
+            if(jsonObj.contains("无视频"))
+            {
+                noVideo->read(jsonObj.value("无视频").toObject());
+            }
+            if(jsonObj.contains("无音频"))
+            {
+                noAudio->read(jsonObj.value("无音频").toObject());
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this,"Error","Json Error");
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this,"Error","Counld not open the file");
+    }
 }
 void ffmpegWidget::saveToFile(QString Filename){
     outputFormat->write(outputFormat->obj);
@@ -198,7 +279,6 @@ void ffmpegWidget::saveToFile(QString Filename){
     noVideo->write(noVideo->obj);
     noAudio->write(noAudio->obj);
     QJsonObject jsonObj;
-    jsonObj.insert("test","testvalue");
     jsonObj["输出格式"]=outputFormat->obj;
     jsonObj["视频分辨率"]=videoQuailty->obj;
     jsonObj["编码器"]=videoCodec->obj;
@@ -222,15 +302,26 @@ void ffmpegWidget::saveToFile(QString Filename){
         file.write(data);
         file.close();
     }
+    else
+    {
+        QMessageBox::warning(this,"Error","Could not open the file");
+    }
 }
 void ffmpegWidget::generate(){
 
 }
 
 void ffmpegWidget::Load(){
-
+    QString filename=presetToChoose->currentText();
+    this->loadFromFile(filename);
 }
 
 void ffmpegWidget::save(){
-    this->saveToFile("./preset.json");
+    QString savename="./preset";
+    savename+=QString::number(num);
+    savename+=".json";
+    this->saveToFile(savename);
+    presetToChoose->addItem(savename);
+    presetToChoose->setCurrentIndex(num-1);
+    num++;
 }
