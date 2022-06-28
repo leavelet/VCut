@@ -111,7 +111,7 @@ void FFOptionsCombo::read(const QJsonObject &json){
         }
     }
 }
-void FFOptionsCombo::write(const QJsonObject &json){
+void FFOptionsCombo::write(QJsonObject &json){
     json["name"] = name;
     json["baseCommand"] = baseCommand;
     json["hint"] = hint;
@@ -119,8 +119,8 @@ void FFOptionsCombo::write(const QJsonObject &json){
     for(int i = 2; i < sum; i++){
         QJsonObject item;
         item["display"] = display_name[i];
-        item["isBase"] = commands[i].first;
-        item["command"] = commands[i].second;
+        item["isBase"] = commands[i-1].first;
+        item["command"] = commands[i-1].second;
         optionArray.append(item);
     }
     json["commands"] = optionArray;
