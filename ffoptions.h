@@ -40,7 +40,7 @@ public:
     virtual QString setInside(int now = 0);
     virtual int getCurrentState();
     virtual void read(const QJsonObject &json);
-    virtual void write(const QJsonObject &json);
+    virtual void write(QJsonObject &json);
 
     void addCustomItem();
     void addItem(bool fromBase, QString display, QString command);
@@ -64,7 +64,7 @@ public:
     virtual QString setInside(int now = 0);
     virtual int getCurrentState();
     virtual void read(const QJsonObject &json);
-    virtual void write(const QJsonObject &json);
+    virtual void write(QJsonObject &json);
     void init();
 };
 

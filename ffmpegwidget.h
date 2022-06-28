@@ -38,6 +38,9 @@ public:
     void saveToFile(QString Filename = "./userSaved.json");
     void generate();
 
+    int num;
+    int currentnum;
+
 public slots:
     void Load();
     void save();
