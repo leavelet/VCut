@@ -43,7 +43,7 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     videoQuailty = new FFOptionsCombo("视频分辨率", "-vf scale=", "如1080:1920 其中之一可填-1以实现自动计算", this);options.push_back(videoQuailty);
     videoCodec = new FFOptionsCombo("编码器", "-c:v ", "如h264, 可以在这里查看:ffmpeg.org/ffmpeg-codecs.html", this);options.push_back(videoCodec);
     frameRate = new FFOptionsCombo("帧速率", "-r ", "格式为数字，如24，或者29.97", this);options.push_back(frameRate);
-    videoBitRate = new FFOptionsCombo("帧速率", "-b:v ", "格式为数量+单位，如10M", this);options.push_back(videoBitRate);
+    videoBitRate = new FFOptionsCombo("码率", "-b:v ", "格式为数量+单位，如10M", this);options.push_back(videoBitRate);
     audioQuality = new FFOptionsCombo("音频采样率", "-ar ", "格式为数字，如44100", this);options.push_back(audioQuality);
     audioCodec = new FFOptionsCombo("音频编码器", "-c:a ", "如libfdk_aac， 可以在这里查看:www.ffmpeg.org/ffmpeg-codecs.html#Audio-Decoders" );options.push_back(audioCodec);
     videoRotation = new FFOptionsCombo("视频旋转", "-map_metadata 0 -metadata:s:v rotate=", "如\"90\"，不推荐自定义",this );options.push_back(videoRotation);
@@ -185,6 +185,9 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
 }
 
 void ffmpegWidget::loadFromFile(QString Filename){
+    const QString properties[15]={"输出格式","视频分辨率","编码器","帧速率","码率","音频采样率",
+                                  "音频编码器","视频旋转","滤镜","仅复制","为流传输优化","立体声",
+                                  "无视频","无音频"};
     QFile file(Filename);
     bool flag=file.open(QIODevice::ReadOnly);
     if(flag)
@@ -196,61 +199,13 @@ void ffmpegWidget::loadFromFile(QString Filename){
         if(parseError.error==QJsonParseError::NoError)
         {
             QJsonObject jsonObj=doc.object();
-            if(jsonObj.contains("输出格式"))
+            int opsize=options.size();
+            for(int i=0;i<opsize;i++)
             {
-                outputFormat->read(jsonObj.value("输出格式").toObject());
-            }
-            if(jsonObj.contains("视频分辨率"))
-            {
-                videoQuailty->read(jsonObj.value("视频分辨率").toObject());
-            }
-            if(jsonObj.contains("编码器"))
-            {
-                videoCodec->read(jsonObj.value("编码器").toObject());
-            }
-            if(jsonObj.contains("帧速率(格式为数字)"))
-            {
-                frameRate->read(jsonObj.value("帧速率(格式为数字)").toObject());
-            }
-            if(jsonObj.contains("帧速率(格式为数量+单位)"))
-            {
-                videoBitRate->read(jsonObj.value("帧速率(格式为数量+单位)").toObject());
-            }
-            if(jsonObj.contains("音频采样率"))
-            {
-                audioQuality->read(jsonObj.value("音频采样率").toObject());
-            }
-            if(jsonObj.contains("音频编码器"))
-            {
-                audioCodec->read(jsonObj.value("音频编码器").toObject());
-            }
-            if(jsonObj.contains("视频旋转"))
-            {
-                videoRotation->read(jsonObj.value("视频旋转").toObject());
-            }
-            if(jsonObj.contains("滤镜"))
-            {
-                filter->read(jsonObj.value("滤镜").toObject());
-            }
-            if(jsonObj.contains("仅复制"))
-            {
-                remix->read(jsonObj.value("仅复制").toObject());
-            }
-            if(jsonObj.contains("为流传输优化"))
-            {
-                optimizedForWeb->read(jsonObj.value("为流传输优化").toObject());
-            }
-            if(jsonObj.contains("立体声"))
-            {
-                stero->read(jsonObj.value("立体声").toObject());
-            }
-            if(jsonObj.contains("无视频"))
-            {
-                noVideo->read(jsonObj.value("无视频").toObject());
-            }
-            if(jsonObj.contains("无音频"))
-            {
-                noAudio->read(jsonObj.value("无音频").toObject());
+                if(jsonObj.contains(properties[i]))
+                {
+                    options[i]->read(jsonObj.value(properties[i]).toObject());
+                }
             }
         }
         else
@@ -264,35 +219,16 @@ void ffmpegWidget::loadFromFile(QString Filename){
     }
 }
 void ffmpegWidget::saveToFile(QString Filename){
-    outputFormat->write(outputFormat->obj);
-    videoQuailty->write(videoQuailty->obj);
-    videoCodec->write(videoCodec->obj);
-    frameRate->write(frameRate->obj);
-    videoBitRate->write(videoBitRate->obj);
-    audioQuality->write(audioQuality->obj);
-    audioCodec->write(audioCodec->obj);
-    videoRotation->write(videoRotation->obj);
-    filter->write(filter->obj);
-    remix->write(remix->obj);
-    optimizedForWeb->write(optimizedForWeb->obj);
-    stero->write(stero->obj);
-    noVideo->write(noVideo->obj);
-    noAudio->write(noAudio->obj);
     QJsonObject jsonObj;
-    jsonObj["输出格式"]=outputFormat->obj;
-    jsonObj["视频分辨率"]=videoQuailty->obj;
-    jsonObj["编码器"]=videoCodec->obj;
-    jsonObj["帧速率(格式为数字)"]=frameRate->obj;
-    jsonObj["帧速率(格式为数量+单位)"]=videoBitRate->obj;
-    jsonObj["音频采样率"]=audioQuality->obj;
-    jsonObj["音频编码器"]=audioCodec->obj;
-    jsonObj["视频旋转"]=videoRotation->obj;
-    jsonObj["滤镜"]=filter->obj;
-    jsonObj["仅复制"]=remix->obj;
-    jsonObj["为流传输优化"]=optimizedForWeb->obj;
-    jsonObj["立体声"]=stero->obj;
-    jsonObj["无视频"]=noVideo->obj;
-    jsonObj["无音频"]=noAudio->obj;
+    int opsize=options.size();
+    const QString properties[15]={"输出格式","视频分辨率","编码器","帧速率","码率","音频采样率",
+                                  "音频编码器","视频旋转","滤镜","仅复制","为流传输优化","立体声",
+                                  "无视频","无音频"};
+    for(int i=0;i<opsize;i++)
+    {
+        options[i]->write(options[i]->obj);
+        jsonObj[properties[i]]=options[i]->obj;
+    }
     QJsonDocument doc(jsonObj);
     QByteArray data=doc.toJson();
     QFile file(Filename);
