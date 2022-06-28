@@ -99,7 +99,7 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     topLayout->addLayout(finalCommandLayout, 7, 0, 2, 1);
     topLayout->addWidget(generateFinalCommand, 9, 0, 1, 1);
     */
-
+    
     topLayout->addWidget(presetText,0,0,1,2);
     topLayout->addWidget(presetToChoose, 0, 2, 1, 6);
     topLayout->addWidget(savePreset, 0, 8, 1, 1);

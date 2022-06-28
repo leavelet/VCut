@@ -38,6 +38,7 @@ public:
     ~VideoPlayer();
     QTime begtime,endtime;
     int total_time;
+    int precise_stoppedTime;
     QString filename = "";
     void changeCurrentPlaying(FileStruct file);
     void setCurrentTime(qint64 t);
@@ -46,14 +47,14 @@ private:
 
     QAVPlayer* player;
     QVideoWidget* videoWidget;
-    QPushButton *changeState, *addToList;
-    QCheckBox *setVolume, *muteBtn;
+    QPushButton *changeState, *addToList, *beginTimeBtn, *endTimeBtn;
+    QCheckBox *setVolume, *muteBtn, *preciseAdjustBtn;
     QSlider *timeSlider;
-    QHBoxLayout *settingsLayout;
+    QHBoxLayout *settingsLayout, *settingsLayout_2;
     QGridLayout *totalLayout;
     getFile *fileChoose;
     QAVAudioOutput audioOutput;
-    QLabel *currentTime;
+    QLabel *currentTime, *begin_end_time;
     QTimer *timer;
 
 signals:
@@ -66,8 +67,9 @@ public slots:
     void changeTime();
     void mute();
     void updateTime();
-
-
+    void setBeginTime();
+    void setEndTime();
+    void preciseAdjust();
 };
 
 QTime ms_to_Qtime(int ms);
