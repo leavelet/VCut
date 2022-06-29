@@ -51,7 +51,7 @@ void Filelist::addfile(FileStruct s)
 
     filelist.push_back(s);
     QListWidgetItem* item_new=new QListWidgetItem(s.filename);
-    item_new->setFlags(Qt::ItemIsEnabled|Qt::ItemIsSelectable);
+    item_new->setFlags(Qt::ItemIsEnabled|Qt::ItemIsEditable|Qt::ItemIsSelectable);
     Qlist->addItem(item_new);
     emit contentChanged();
 }
