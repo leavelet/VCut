@@ -22,6 +22,8 @@ public:
     virtual int getCurrentState() = 0;
     virtual void read(const QJsonObject &json) = 0;
     virtual void write(QJsonObject &json) = 0;
+signals:
+    void stateChanged();
 };
 
 #endif // ABSTRUCTOPTION_H

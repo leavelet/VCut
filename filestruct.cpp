@@ -2,13 +2,14 @@
 
 FileStruct::FileStruct()
 {
-
+    command = "";
 }
 
 FileStruct::FileStruct(QString name, QTime beg, QTime end){
     filename = name;
     beg_time = beg;
     end_time = end;
+    command = "";
 }
 
 FileStruct::FileStruct(QString name):beg_time(0, 0){
@@ -23,4 +24,5 @@ FileStruct::FileStruct(QString name):beg_time(0, 0){
     if(hour * 3600 * 1000 + minute * 60 * 1000 + second * 1000 + m != ms)
         qDebug() << hour * 3600 * 1000 + minute * 60 * 1000 + second * 1000 << " not equal " << ms << Qt::endl;
     end_time = QTime(hour, minute, second, m);
+    command = "";
 }

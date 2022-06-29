@@ -5,28 +5,16 @@
 #include "QJsonArray"
 #include "QJsonParseError"
 #include "QMessageBox"
+#include "QListWidget"
 
-ffmpegWidget::ffmpegWidget(QWidget *parent)
-    : QWidget{parent}
+ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
+    : QWidget{parent}, fileTab(_fileTab)
 {
     topLayout = new QGridLayout(this);
-    /*
-    presetLayout = new QGridLayout;
-    filterLayout = new QGridLayout;
-    finalCommandLayout = new QGridLayout;
-    fileChooseLayout = new QHBoxLayout;
-    outputLayout = new QHBoxLayout;
-    viedoLayout = new QHBoxLayout;
-    audioLayout = new QHBoxLayout;
-    miscLayout = new QHBoxLayout;
-
-    commandsWidget = new QWidget(this);
-    commandLayout = new QGridLayout(commandsWidget);
-    */
 
     savePreset = new QPushButton("保存预设", this);
     loadPreset = new QPushButton("读取预设",this);
-    generateFinalCommand = new QPushButton("应用命令",this);
+    generateFinalCommand = new QPushButton("应用命令到选中文件",this);
 
     fileToChoose = new QComboBox(this);
     presetToChoose = new QComboBox(this);
@@ -54,52 +42,6 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     noVideo = new FFOptionsCheck("无视频","-vn", "", 0,this);options.push_back(noVideo);
     noAudio = new FFOptionsCheck("无音频","-an","", 0, this);options.push_back(noAudio);
 
-    /*
-    fileChooseLayout->addWidget(fileComboText);
-    fileChooseLayout->addWidget(fileToChoose);
-
-    presetLayout->addWidget(presetText, 0, 0, 1, 1);
-    presetLayout->addWidget(presetToChoose, 0, 1, 1, 3);
-    presetLayout->addWidget(savePreset, 0, 5, 1, 1);
-    presetLayout->addWidget(loadPreset, 0, 6, 1, 1);
-
-    outputLayout->addWidget(outputFormat);
-    outputLayout->addWidget(remix);
-    outputLayout->addWidget(optimizedForWeb);
-
-    viedoLayout->addWidget(noVideo);
-    viedoLayout->addWidget(videoQuailty);
-    viedoLayout->addWidget(videoCodec);
-    viedoLayout->addWidget(frameRate);
-    viedoLayout->addWidget(videoBitRate);
-
-    audioLayout->addWidget(noAudio);
-    audioLayout->addWidget(stero);
-    audioLayout->addWidget(audioQuality);
-    audioLayout->addWidget(audioCodec);
-
-    miscLayout->addWidget(videoRotation);
-
-    filterLayout->addWidget(filter, 0, 0, 1, 1);
-    filterLayout->addWidget(filterLine, 0, 1, 1, 3);
-    finalCommandLayout->addWidget(finalCommandText, 0, 0, 1, 1);
-    finalCommandLayout->addWidget(finalCommand, 1, 0, 3, 4);
-
-    commandLayout->addLayout(outputLayout, 0, 0, 1, 1);
-    commandLayout->addLayout(viedoLayout, 1, 0, 1, 1);
-    commandLayout->addLayout(audioLayout, 2, 0, 1, 1);
-    commandLayout->addLayout(miscLayout, 3, 0, 1, 1);
-    commandLayout->addLayout(filterLayout, 4, 0, 1, 1);
-
-//    commandsWidget->setStyleSheet("border: 1px solid red");
-
-    topLayout->addLayout(presetLayout, 0, 0, 1, 1);
-    topLayout->addLayout(fileChooseLayout, 1, 0, 1, 1);
-    topLayout->addWidget(commandsWidget, 2, 0, 5, 1);
-    topLayout->addLayout(finalCommandLayout, 7, 0, 2, 1);
-    topLayout->addWidget(generateFinalCommand, 9, 0, 1, 1);
-    */
-    
     topLayout->addWidget(presetText,0,0,1,2);
     topLayout->addWidget(presetToChoose, 0, 2, 1, 6);
     topLayout->addWidget(savePreset, 0, 8, 1, 1);
@@ -129,8 +71,11 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     topLayout->addWidget(filterLine, 6, 6, 1, 4);
 
     topLayout->addWidget(finalCommandText, 7, 0, 1, 2);
-    topLayout->addWidget(finalCommand, 8, 0, 3, 10);
-    topLayout->addWidget(generateFinalCommand, 9, 0, 1, 1);
+    topLayout->addWidget(finalCommand, 8, 0, 2, 10);
+    topLayout->addWidget(generateFinalCommand, 10, 3, 1, 4);
+
+    fileToChoose->addItem("所有文件");
+    fileToChoose->addItem("当前文件");
 
     connect(noVideo->box,&QCheckBox::stateChanged,this,[this]()
     {
@@ -182,10 +127,50 @@ ffmpegWidget::ffmpegWidget(QWidget *parent)
     num=1;
     currentnum=1;
     connect(loadPreset,&QPushButton::clicked,this,&ffmpegWidget::Load);
+
+    connect(fileTab->fileToChoose, &Filelist::contentChanged, this, [&](){
+        //merge
+        if(fileTab->fileToChoose->mergeOrSingle->isChecked()){
+            return;
+        }
+        for(int i = 2; i < fileToChoose->count(); i++){
+            fileToChoose->removeItem(i);
+        }
+        auto iter = fileTab->fileToChoose->filelist.begin();
+        for(; iter != fileTab->fileToChoose->filelist.end(); iter++){
+            fileToChoose->addItem(iter->filename);
+        }
+    });
+    connect(fileTab->fileToChoose->Qlist, &QListWidget::currentRowChanged, this, [&](){
+        //merge
+        if(fileTab->fileToChoose->mergeOrSingle->isChecked()){
+            return;
+        }
+        fileToChoose->removeItem(1);
+        fileToChoose->insertItem(1, "当前文件: "+ fileTab->fileToChoose->Qlist->currentItem()->text());
+        fileToChoose->setCurrentIndex(1);
+    });
+
+    connect(fileTab->fileToChoose->mergeOrSingle, &QCheckBox::stateChanged, this, [&](){
+        if(fileTab->fileToChoose->mergeOrSingle->isChecked()){
+            fileToChoose->clear();
+            fileToChoose->addItem("全部文件");
+        }
+        else{
+            fileToChoose->addItem("当前文件：空");
+            for(auto &x: fileTab->fileToChoose->filelist){
+                fileToChoose->addItem(x.filename);
+            }
+        }
+    });
+    connect(generateFinalCommand, &QPushButton::clicked, this, &ffmpegWidget::apply);
+     for(auto t: options){
+         connect(t, &AbstructOption::stateChanged, this, &ffmpegWidget::generate);
+     }
 }
 
 void ffmpegWidget::loadFromFile(QString Filename){
-    const QString properties[15]={"输出格式","视频分辨率","编码器","帧速率","码率","音频采样率",
+    const QString properties[]={"输出格式","视频分辨率","编码器","帧速率","码率","音频采样率",
                                   "音频编码器","视频旋转","滤镜","仅复制","为流传输优化","立体声",
                                   "无视频","无音频"};
     QFile file(Filename);
@@ -244,7 +229,19 @@ void ffmpegWidget::saveToFile(QString Filename){
     }
 }
 void ffmpegWidget::generate(){
+    QString command = "ffmpeg -hide_banner ";
+    for(auto x: options){
+        if(x->isEnabled() && x->getCommand() != ""){
+            command = command + x->getCommand();
+            command = command + QString(" ");
+        }
+    }
+    finalCommand->clear();
+    finalCommand->document()->setPlainText(command);
+}
 
+void ffmpegWidget::apply(){
+    generate();
 }
 
 void ffmpegWidget::Load(){

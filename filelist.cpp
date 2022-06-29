@@ -53,6 +53,7 @@ void Filelist::addfile(FileStruct s)
     QListWidgetItem* item_new=new QListWidgetItem(s.filename);
     item_new->setFlags(Qt::ItemIsEnabled|Qt::ItemIsEditable|Qt::ItemIsSelectable);
     Qlist->addItem(item_new);
+    emit contentChanged();
 }
 Filelist::~Filelist()
 {
@@ -120,22 +121,9 @@ void Filelist::removebutton_clicked()
 
     if(!filelist.empty())
         listiterator=filelist.end();
+    emit contentChanged();
 }
-/*
-void Filelist::addbutton_clicked()
-{
-    int r=currentRow();
-    int cnt=count();
-    if(r>=0&&r<cnt)
-    {
-        QListWidgetItem* item_new=new QListWidgetItem("new file");
-        insertItem(r+1,item_new);
-        item_new->setFlags(Qt::ItemIsEnabled|Qt::ItemIsEditable|Qt::ItemIsSelectable);
-        this->editItem(item_new);
-        setCurrentRow(r+1);
-    }
-}
-*/
+
 
 void Filelist::upbutton_clicked()
 {
@@ -150,6 +138,7 @@ void Filelist::upbutton_clicked()
     listiterator++;
     (*i)=(*listiterator);
     (*listiterator)=temp;
+    emit contentChanged();
 }
 void Filelist::downbutton_clicked()
 {
@@ -164,6 +153,7 @@ void Filelist::downbutton_clicked()
     listiterator--;
     (*i)=(*listiterator);
     (*listiterator)=temp;
+    emit contentChanged();
 }
 void Filelist::clearbutton_clicked()
 {
@@ -173,6 +163,7 @@ void Filelist::clearbutton_clicked()
         delete Qlist->takeItem(0);
     }
     filelist.clear();
+    emit contentChanged();
 }
 void Filelist::copybutton_clicked()
 {
@@ -186,4 +177,5 @@ void Filelist::copybutton_clicked()
         filelist.insert(listiterator,file);
         Qlist->setCurrentRow(r+1);
     }
+    emit contentChanged();
 }

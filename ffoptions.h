@@ -50,6 +50,7 @@ public:
 
 class FFOptionsCheck : public AbstructOption
 {
+    Q_OBJECT
 public:
     FFOptionsCheck(QWidget* parent = nullptr);
     FFOptionsCheck(QString name, QString command_checked, QString command_unchecked, int st,  QWidget* parent = nullptr);

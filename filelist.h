@@ -19,6 +19,7 @@
 
 class Filelist: public QWidget
 {
+    Q_OBJECT
 public:
     QLabel *label;
     QCheckBox *mergeOrSingle;
@@ -40,6 +41,8 @@ public slots:
     void downbutton_clicked();
     void clearbutton_clicked();
     void copybutton_clicked();
+signals:
+    void contentChanged();
 };
 
 #endif // FILELIST_H
