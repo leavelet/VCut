@@ -46,6 +46,7 @@ void FFOptionsCheck::init(){
         box->setCheckState(Qt::Checked);
     else
         box->setCheckState(Qt::Unchecked);
+    connect(box, &QCheckBox::stateChanged, this, &FFOptionsCheck::stateChanged);
 }
 
 int FFOptionsCheck::getCurrentState(){

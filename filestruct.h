@@ -12,6 +12,7 @@ public:
     FileStruct(QString name);
     QString filename;
     QTime beg_time, end_time;
+    QString command;
 };
 
 #endif // FILESTRUCT_H

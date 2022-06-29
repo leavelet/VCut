@@ -12,18 +12,20 @@
 #include <QLineEdit>
 
 #include "ffoptions.h"
+#include "filelist.h"
+#include "choosefile.h"
 
 class ffmpegWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ffmpegWidget(QWidget *parent = nullptr);
+    explicit ffmpegWidget(ChooseFile* fileTab, QWidget *parent = nullptr);
     QGridLayout *topLayout;
     QGridLayout *presetLayout, *filterLayout, *finalCommandLayout, *commandLayout;
     QHBoxLayout *outputLayout, *viedoLayout, *audioLayout, *miscLayout, *fileChooseLayout;
     vector<AbstructOption*> options;
 
-    QPushButton *savePreset, *loadPreset, *generateFinalCommand;
+    QPushButton *savePreset, *loadPreset, *generateFinalCommand, *applyToChosen;
     QComboBox *fileToChoose, *presetToChoose;
     FFOptionsCombo *outputFormat, *videoQuailty, *videoCodec, *frameRate, *videoBitRate,
         *audioQuality, *audioCodec, *videoRotation, *filter;
@@ -33,10 +35,10 @@ public:
     QLineEdit* filterLine;
 
     QWidget* commandsWidget;
+    ChooseFile* fileTab;
 
     void loadFromFile(QString Filename = "./defalut.json");
     void saveToFile(QString Filename = "./userSaved.json");
-    void generate();
 
     int num;
     int currentnum;
@@ -44,6 +46,8 @@ public:
 public slots:
     void Load();
     void save();
+    void generate();
+    void apply();
 };
 
 #endif // FFMPEGWIDGET_H

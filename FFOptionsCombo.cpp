@@ -21,6 +21,7 @@ void FFOptionsCombo::init(){
     chooseList->addItem("自动");//0
     chooseList->addItem("自定义");//1
     commands.push_back(std::make_pair(false, ""));//0
+    commands.push_back(std::make_pair(false, ""));//1
     display_name.push_back("自动");
     display_name.push_back("自定义");
 
@@ -37,6 +38,9 @@ void FFOptionsCombo::init(){
         if( cnt == 1){
             addCustomItem();
             return;
+        }
+        else{
+            emit stateChanged();
         }
     });
 }
@@ -74,10 +78,12 @@ QString FFOptionsCombo::getCommand(){
     if(now <= 1) return "";
     else {
         if(commands[now].first){
-            return baseCommand + " " + commands[now].second;
+            QString ret = baseCommand + " " + commands[now].second;
+            return ret;
         }
         else{
-            return commands[now].second;
+            QString ret = commands[now].second;
+            return ret;
         }
     }
 }
