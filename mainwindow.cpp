@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
     begin->setMaximumWidth(500);
     TabChoseFile = new ChooseFile();
     TabSetFFmpeg = new ffmpegWidget(TabChoseFile);
-    qDebug() << TabChoseFile << Qt::endl;
     TabMore = new QWidget();
     TabMain->insertTab(0, TabChoseFile, "选择文件");
     TabMain->insertTab(1, TabSetFFmpeg, "参数设置");
