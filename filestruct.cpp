@@ -5,10 +5,11 @@ FileStruct::FileStruct()
     command = "";
 }
 
-FileStruct::FileStruct(QString name, QTime beg, QTime end){
+FileStruct::FileStruct(QString name, QTime beg, QTime end, bool _extract){
     filename = name;
     beg_time = beg;
     end_time = end;
+    extract = _extract;
     command = "";
 }
 

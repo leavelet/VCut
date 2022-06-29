@@ -31,7 +31,7 @@ ChooseFile::ChooseFile(QWidget *parent)
     this->setLayout(chooseLayout);
 
     QObject::connect(player, &VideoPlayer::addfile, fileToChoose, [&](){
-        FileStruct tmp(player->filename, player->begtime, player->endtime);
+        FileStruct tmp(player->filename, player->begtime, player->endtime, player->extract);
         fileToChoose->addfile(tmp);
     });
     QObject::connect(fileToChoose->Qlist, &QListWidget::currentRowChanged, this, [this](){
@@ -40,9 +40,7 @@ ChooseFile::ChooseFile(QWidget *parent)
             this->player->changeCurrentPlaying(fs);
         }
     });
-
     fileImport->filelist = fileToChoose;
-
 }
 
 ChooseFile::~ChooseFile(){

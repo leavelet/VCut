@@ -42,6 +42,7 @@ public:
     QString filename = "";
     void changeCurrentPlaying(FileStruct file);
     void setCurrentTime(qint64 t);
+    bool extract = false;
 
 private:
 

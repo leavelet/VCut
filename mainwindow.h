@@ -7,6 +7,9 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QApplication>
+#include <QProcess>
+#include <QDir>
 
 #include "choosefile.h"
 #include "ffmpegwidget.h"
@@ -29,7 +32,8 @@ private:
     ffmpegWidget* TabSetFFmpeg;
     ChooseFile* TabChoseFile;
     QVBoxLayout *topLayout;
-signals:
+public slots:
+    void beginProcess();
 
 };
 #endif // MAINWINDOW_H

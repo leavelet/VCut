@@ -53,11 +53,11 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     QObject::connect(preciseAdjustBtn, &QCheckBox::stateChanged, this, &VideoPlayer::preciseAdjust);
     QObject::connect(player, &QAVPlayer::audioFrame, player, [this](const QAVAudioFrame &frame) { this->audioOutput.play(frame); });
     QObject::connect(player, &QAVPlayer::videoFrame, player, [this](const QAVVideoFrame &frame) {
-//        QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_RGB32);
+        QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_YUV420P);
         this->videoWidget->videoSink()->setVideoFrame(frame);
     });
     //it seems there are no mistakes
-    QObject::connect(addToList, &QPushButton::clicked, [this](){emit addfile();});
+    QObject::connect(addToList, &QPushButton::clicked, this, [this](){emit addfile();});
     QObject::connect(timer, &QTimer::timeout, this, &VideoPlayer::updateTime);
     QObject::connect(player, &QAVPlayer::paused, this, &VideoPlayer::updateTime);
     QObject::connect(player, &QAVPlayer::played, this, &VideoPlayer::updateTime);
@@ -89,6 +89,7 @@ void VideoPlayer::open(){
     total_time = player->duration();
     endtime = ms_to_Qtime(player->duration());
     timer->start(500);
+    extract = false;
 }
 
 void VideoPlayer::playPauseSwitch(){
@@ -148,6 +149,7 @@ void VideoPlayer::mute(){
 }
 
 void VideoPlayer::setBeginTime(){
+    extract = true;
     begtime = ms_to_Qtime(player->position());
     QString str1 = begtime.toString("hh:mm:ss:zzz");
     QString str2 = endtime.toString("hh:mm:ss:zzz");
@@ -155,6 +157,7 @@ void VideoPlayer::setBeginTime(){
 }
 
 void VideoPlayer::setEndTime(){
+    extract = true;
     endtime = ms_to_Qtime(player->position());
     QString str1 = begtime.toString("hh:mm:ss:zzz");
     QString str2 = endtime.toString("hh:mm:ss:zzz");

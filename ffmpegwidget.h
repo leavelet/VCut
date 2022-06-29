@@ -30,9 +30,9 @@ public:
     FFOptionsCombo *outputFormat, *videoQuailty, *videoCodec, *frameRate, *videoBitRate,
         *audioQuality, *audioCodec, *videoRotation, *filter;
     FFOptionsCheck *remix, *hardwareAcceleration, *optimizedForWeb, *stero, *noVideo, *noAudio;
-    QLabel *presetText, *finalCommandText, *fileComboText;
-    QPlainTextEdit* finalCommand;
-    QLineEdit* filterLine;
+    QLabel *presetText, *finalCommandText, *fileComboText, *fileNameLabel;
+    QPlainTextEdit *finalCommand;
+    QLineEdit *filterLine, *fileName;
 
     QWidget* commandsWidget;
     ChooseFile* fileTab;

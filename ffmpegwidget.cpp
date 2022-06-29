@@ -22,10 +22,13 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
     fileComboText = new QLabel("选择应用到的文件", this);
     presetText = new QLabel("预设", this);
     finalCommandText = new QLabel("最终命令", this);
+    fileNameLabel = new QLabel("输出文件名", this);
+
     //TODO:不使用命令的方式 直接调用相关库执行
     finalCommand = new QPlainTextEdit("ffmpeg命令", this);
 
     filterLine = new QLineEdit(this);
+    fileName = new QLineEdit(this);
 
     outputFormat = new FFOptionsCombo("输出格式", ".", "如:mp4", this); options.push_back(outputFormat);
     videoQuailty = new FFOptionsCombo("视频分辨率", "-vf scale=", "如1080:1920 其中之一可填-1以实现自动计算", this);options.push_back(videoQuailty);
@@ -50,9 +53,11 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
     topLayout->addWidget(fileToChoose,1,2,1,6);
     //topLayout->addWidget(commandsWidget, 2, 0, 5, 1);
 
-    topLayout->addWidget(outputFormat,2,0,1,2);
-    topLayout->addWidget(remix,2,2,1,2);
-    topLayout->addWidget(optimizedForWeb,2,4,1,2);
+    topLayout->addWidget(fileNameLabel, 2, 0, 1, 2);
+    topLayout->addWidget(fileName, 2, 2, 1, 2);
+    topLayout->addWidget(outputFormat,2, 4, 1, 2);
+    topLayout->addWidget(remix,2, 6, 1, 1);
+    topLayout->addWidget(optimizedForWeb,2, 7 ,1,1);
 
     topLayout->addWidget(noVideo,3,0,1,2);
     topLayout->addWidget(videoQuailty,3,2,1,2);
@@ -85,10 +90,6 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
             videoCodec->setEnabled(false);
             frameRate->setEnabled(false);
             videoBitRate->setEnabled(false);
-            videoQuailty->setVisible(false);
-            videoCodec->setVisible(false);
-            frameRate->setVisible(false);
-            videoBitRate->setVisible(false);
         }
         else
         {
@@ -96,11 +97,8 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
             videoCodec->setEnabled(true);
             frameRate->setEnabled(true);
             videoBitRate->setEnabled(true);
-            videoQuailty->setVisible(true);
-            videoCodec->setVisible(true);
-            frameRate->setVisible(true);
-            videoBitRate->setVisible(true);
         }
+        generate();
     });
     connect(noAudio->box,&QCheckBox::stateChanged,this,[this]()
     {
@@ -109,19 +107,14 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
             stero->setEnabled(false);
             audioQuality->setEnabled(false);
             audioCodec->setEnabled(false);
-            stero->setVisible(false);
-            audioQuality->setVisible(false);
-            audioCodec->setVisible(false);
         }
         else
         {
             stero->setEnabled(true);
             audioQuality->setEnabled(true);
             audioCodec->setEnabled(true);
-            stero->setVisible(true);
-            audioQuality->setVisible(true);
-            audioCodec->setVisible(true);
         }
+        generate();
     });
     connect(savePreset,&QPushButton::clicked,this,&ffmpegWidget::save);
     num=1;
@@ -230,7 +223,8 @@ void ffmpegWidget::saveToFile(QString Filename){
 }
 void ffmpegWidget::generate(){
     QString command = "ffmpeg -hide_banner ";
-    for(auto x: options){
+    for(int i = 1; i < options.size(); i++){
+        auto x = options[i];
         if(x->isEnabled() && x->getCommand() != ""){
             command = command + x->getCommand();
             command = command + QString(" ");
@@ -242,6 +236,28 @@ void ffmpegWidget::generate(){
 
 void ffmpegWidget::apply(){
     generate();
+    int cnt = fileToChoose->currentIndex();
+    if( cnt == 0 || (cnt == 1 && fileTab->fileToChoose->Qlist->currentRow() < 0)){
+        for(auto iter = fileTab->fileToChoose->filelist.begin();
+             iter != fileTab->fileToChoose->filelist.end(); iter++){
+            iter->command = finalCommand->document()->toPlainText();
+        }
+    }
+    if(cnt == 1){
+        //current dat have valid value
+        int x = fileTab->fileToChoose->Qlist->currentRow();
+        auto file = fileTab->fileToChoose->filelist.begin();
+        for(int i = 1; i <= x; i++) file++;
+        qDebug() << file->filename << Qt::endl;
+        file->command = finalCommand->document()->toPlainText() + " -i " + file->filename + " ";
+    }
+    else{
+        //change cnt-2
+        auto file = fileTab->fileToChoose->filelist.begin();
+        for(int i = 1; i <= cnt-2; i++) file++;
+        qDebug() << file->filename << Qt::endl;
+        file->command = finalCommand->document()->toPlainText() + " -i " + file->filename + " ";
+    }
 }
 
 void ffmpegWidget::Load(){

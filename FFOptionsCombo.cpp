@@ -78,7 +78,11 @@ QString FFOptionsCombo::getCommand(){
     if(now <= 1) return "";
     else {
         if(commands[now].first){
-            QString ret = baseCommand + " " + commands[now].second;
+            QString ret;
+            if(baseCommand.endsWith('='))
+                 ret = baseCommand + commands[now].second;
+            else
+                 ret = baseCommand + " " + commands[now].second;
             return ret;
         }
         else{
