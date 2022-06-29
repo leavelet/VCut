@@ -140,7 +140,15 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
             return;
         }
         fileToChoose->removeItem(1);
-        fileToChoose->insertItem(1, "当前文件: "+ fileTab->fileToChoose->Qlist->currentItem()->text());
+        if(fileTab->fileToChoose->Qlist->currentRow()>=0)
+        {
+            fileToChoose->insertItem(1, "当前文件: "+ fileTab->fileToChoose->Qlist->currentItem()->text());
+        }
+        else
+        {
+            fileToChoose->insertItem(1, "当前文件");
+        }
+
         fileToChoose->setCurrentIndex(1);
     });
 
