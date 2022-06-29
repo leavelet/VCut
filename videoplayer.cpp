@@ -68,8 +68,6 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     //it seems there are no mistakes
     QObject::connect(addToList, &QPushButton::clicked, [this](){emit addfile();});
     QObject::connect(timer, &QTimer::timeout, this, &VideoPlayer::updateTime);
-    QObject::connect(player, &QAVPlayer::paused, this, &VideoPlayer::updateTime);
-    QObject::connect(player, &QAVPlayer::played, this, &VideoPlayer::updateTime);
 }
 
 VideoPlayer::~VideoPlayer(){
@@ -101,11 +99,14 @@ void VideoPlayer::open(){
 }
 
 void VideoPlayer::playPauseSwitch(){
-    if (player->state() != QAVPlayer::PausedState) { // No frames if it is already paused
-        player->pause();
-    }
-    else {
-        player->play();
+    if(!preciseAdjustBtn->isChecked())
+    {
+        if (player->state() != QAVPlayer::PausedState) { // No frames if it is already paused
+            player->pause();
+        }
+        else {
+            player->play();
+        }
     }
 }
 
@@ -122,7 +123,7 @@ void VideoPlayer::changeTime(){
         int totalTime = player->duration();
         int current_position = timeSlider->sliderPosition();
         player->seek(double(totalTime)/1000*current_position);
-        QString str1 = ms_to_Qtime(totalTime*current_position/1000).toString("hh:mm:ss");
+        QString str1 = ms_to_Qtime(double(totalTime)/1000*current_position).toString("hh:mm:ss");
         QString str2 = ms_to_Qtime(totalTime).toString("hh:mm:ss");
         currentTime->setText(str1 + "/" + str2);
         player->play();
@@ -142,8 +143,8 @@ void VideoPlayer::updateTime(){
         int totalTime = player->duration();
         int cur_time = player->position();
         int current_position = timeSlider->sliderPosition();
-        timeSlider->setValue(1000*cur_time/totalTime);
-        QString str1 = ms_to_Qtime(totalTime*current_position/1000).toString("hh:mm:ss");
+        timeSlider->setValue(1000*double(double(cur_time)/double(totalTime)));
+        QString str1 = ms_to_Qtime(double(totalTime)/1000*current_position).toString("hh:mm:ss");
         QString str2 = ms_to_Qtime(totalTime).toString("hh:mm:ss");
         currentTime->setText(str1 + "/" + str2);
     }
@@ -179,7 +180,7 @@ void VideoPlayer::preciseAdjust(){
         int current_position = timeSlider->sliderPosition();
         precise_stoppedTime = double(totalTime)/1000*current_position;
         player->seek(precise_stoppedTime);
-        QString str1 = ms_to_Qtime(totalTime*current_position/1000).toString("hh:mm:ss:zzz");
+        QString str1 = ms_to_Qtime(precise_stoppedTime).toString("hh:mm:ss:zzz");
         QString str2 = ms_to_Qtime(totalTime).toString("hh:mm:ss:zzz");
         currentTime->setText(str1 + "/" + str2);
         timeSlider->setSliderPosition(500);
