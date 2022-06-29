@@ -17,7 +17,10 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     preciseAdjustBtn = new QCheckBox("精细调节", this);
     beginTimeBtn = new QPushButton("设置为开始时间", this);
     endTimeBtn = new QPushButton("设置为结束时间", this);
-    begin_end_time = new QLabel("当前设置的开始时间为：00:00:00:000         当前设置的结束时间为：00:00:00:000");
+    begin_time_label = new QLabel("当前设置的开始时间为：");
+    end_time_label = new QLabel("当前设置的结束时间为：");
+    begin_time = new QLineEdit("00:00:00:000");
+    end_time = new QLineEdit("00:00:00:000");
     timeSlider = new QSlider(Qt::Horizontal, this);
     timer = new QTimer(this);
     timeSlider->setMinimum(0);
@@ -26,6 +29,7 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     totalLayout = new QGridLayout();
     settingsLayout = new QHBoxLayout();
     settingsLayout_2 = new QHBoxLayout();
+    begin_end_layout = new QHBoxLayout();
     fileChoose = new getFile(this);
 
     settingsLayout->addWidget(changeState);
@@ -35,14 +39,18 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     settingsLayout->addWidget(currentTime);
     settingsLayout_2->addWidget(beginTimeBtn);
     settingsLayout_2->addWidget(endTimeBtn);
+    begin_end_layout->addWidget(begin_time_label);
+    begin_end_layout->addWidget(begin_time);
+    begin_end_layout->addWidget(end_time_label);
+    begin_end_layout->addWidget(end_time);
 
     videoWidget->show();
     totalLayout->addWidget(fileChoose, 0, 0, 1, 8);
     totalLayout->addWidget(addToList, 0, 8, 1, 1);
     totalLayout->addWidget(videoWidget, 1, 0, 16, 9);
     totalLayout->addLayout(settingsLayout, 25, 0, 1, 10);
-    totalLayout->addLayout(settingsLayout_2, 27, 0, 1, 5);
-    totalLayout->addWidget(begin_end_time, 29, 0, 1, 5);
+    totalLayout->addLayout(settingsLayout_2, 27, 2, 1, 6);
+    totalLayout->addLayout(begin_end_layout, 29, 2, 1, 6);
     this->setLayout(totalLayout);
     QObject::connect(changeState, &QPushButton::clicked, this, &VideoPlayer::playPauseSwitch);
     QObject::connect(fileChoose, &getFile::fileChanged, this, &VideoPlayer::open);
@@ -51,6 +59,7 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     QObject::connect(beginTimeBtn, &QPushButton::clicked, this, &VideoPlayer::setBeginTime);
     QObject::connect(endTimeBtn, &QPushButton::clicked, this, &VideoPlayer::setEndTime);
     QObject::connect(preciseAdjustBtn, &QCheckBox::stateChanged, this, &VideoPlayer::preciseAdjust);
+    QObject::connect(begin_time, &QLineEdit::textChanged, this, &VideoPlayer::user_setTime);
     QObject::connect(player, &QAVPlayer::audioFrame, player, [this](const QAVAudioFrame &frame) { this->audioOutput.play(frame); });
     QObject::connect(player, &QAVPlayer::videoFrame, player, [this](const QAVVideoFrame &frame) {
         QVideoFrame videoFrame = frame.convertTo(AV_PIX_FMT_YUV420P);
@@ -153,7 +162,8 @@ void VideoPlayer::setBeginTime(){
     begtime = ms_to_Qtime(player->position());
     QString str1 = begtime.toString("hh:mm:ss:zzz");
     QString str2 = endtime.toString("hh:mm:ss:zzz");
-    begin_end_time->setText("当前设置的开始时间为：" + str1 + "         当前设置的结束时间为：" + str2);
+    begin_time->setText(str1);
+    end_time->setText(str2);
 }
 
 void VideoPlayer::setEndTime(){
@@ -161,7 +171,8 @@ void VideoPlayer::setEndTime(){
     endtime = ms_to_Qtime(player->position());
     QString str1 = begtime.toString("hh:mm:ss:zzz");
     QString str2 = endtime.toString("hh:mm:ss:zzz");
-    begin_end_time->setText("当前设置的开始时间为：" + str1 + "         当前设置的结束时间为：" + str2);
+    begin_time->setText(str1);
+    end_time->setText(str2);
 }
 
 void VideoPlayer::preciseAdjust(){
@@ -180,4 +191,11 @@ void VideoPlayer::preciseAdjust(){
     {
         player->play();
     }
+}
+
+void VideoPlayer::user_setTime(){
+    QString str1 = begin_time->text();
+    QString str2 = end_time->text();
+    begtime = QTime::fromString(str1,"hh:mm:ss:zzz");
+    endtime = QTime::fromString(str2,"hh:mm:ss:zzz");
 }

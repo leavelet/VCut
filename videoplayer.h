@@ -26,6 +26,7 @@
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QString>
+#include <QLineEdit>
 
 #include "getfile.h"
 #include "filestruct.h"
@@ -51,11 +52,12 @@ private:
     QPushButton *changeState, *addToList, *beginTimeBtn, *endTimeBtn;
     QCheckBox *setVolume, *muteBtn, *preciseAdjustBtn;
     QSlider *timeSlider;
-    QHBoxLayout *settingsLayout, *settingsLayout_2;
+    QHBoxLayout *settingsLayout, *settingsLayout_2, *begin_end_layout;
     QGridLayout *totalLayout;
     getFile *fileChoose;
     QAVAudioOutput audioOutput;
-    QLabel *currentTime, *begin_end_time;
+    QLabel *currentTime, *begin_time_label, *end_time_label;
+    QLineEdit *begin_time, *end_time;
     QTimer *timer;
 
 signals:
@@ -71,6 +73,7 @@ public slots:
     void setBeginTime();
     void setEndTime();
     void preciseAdjust();
+    void user_setTime();
 };
 
 QTime ms_to_Qtime(int ms);
