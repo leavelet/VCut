@@ -73,7 +73,7 @@ void FFOptionsCheck::read(const QJsonObject &json){
     }
     init();
 }
-void FFOptionsCheck::write(const QJsonObject &json){
+void FFOptionsCheck::write(QJsonObject &json){
     json["name"] = name;
     json["command_checked"] = command_checked;
     json["command_unchecked"] = command_unchecked;
