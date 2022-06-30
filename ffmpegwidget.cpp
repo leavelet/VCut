@@ -248,6 +248,20 @@ void ffmpegWidget::saveToFile(QString Filename){
     }
 }
 void ffmpegWidget::generate(){
+    QString out_file = "";
+    if(fileName->text().length() != 0) out_file = fileName->text();
+    else{
+        if(fileToChoose->currentIndex() == 0 && fileTab->fileToChoose->filelist.size() != 0){
+            out_file = fileTab->fileToChoose->filelist.begin()->filename;
+            int lst = out_file.lastIndexOf(".");
+            out_file.erase(out_file.constBegin()+lst, out_file.constBegin()+out_file.length());
+            srand(time(0));
+            out_file += "_" + QString::number(rand()%10);
+            qDebug() << out_file << Qt::endl;
+            fileName->setText(out_file);
+
+        }
+    }
     QString command = "ffmpeg -hide_banner ";
     for(int i = 1; i < options.size(); i++){
         auto x = options[i];
@@ -264,9 +278,22 @@ void ffmpegWidget::apply(){
     generate();
     int cnt = fileToChoose->currentIndex();
     if( cnt == 0 || (cnt == 1 && fileTab->fileToChoose->Qlist->currentRow() < 0)){
-        for(auto iter = fileTab->fileToChoose->filelist.begin();
-             iter != fileTab->fileToChoose->filelist.end(); iter++){
-            iter->command = finalCommand->document()->toPlainText();
+        for(auto iter = fileTab->fileToChoose->filelist.begin(); iter != fileTab->fileToChoose->filelist.end(); iter++){
+            QString out_name = "";
+            if(fileName->text().length() == 0){
+                out_name = iter->filename;
+                out_name.erase(out_name.constBegin() + iter->filename.lastIndexOf("."), out_name.constEnd());
+            }
+            else{
+                out_name = fileName->text();
+            }
+            if(outputFormat->chooseList->currentIndex() <= 1){
+                out_name += ".mp4";
+            }
+            else{
+                out_name += "." + outputFormat->getCommand();
+            }
+            iter->command = finalCommand->document()->toPlainText() + " " + out_name;
         }
     }
     if(cnt == 1){
@@ -275,14 +302,14 @@ void ffmpegWidget::apply(){
         auto file = fileTab->fileToChoose->filelist.begin();
         for(int i = 1; i <= x; i++) file++;
         qDebug() << file->filename << Qt::endl;
-        file->command = finalCommand->document()->toPlainText() + " -i " + file->filename + " ";
+        file->command = finalCommand->document()->toPlainText();
     }
     else{
         //change cnt-2
         auto file = fileTab->fileToChoose->filelist.begin();
         for(int i = 1; i <= cnt-2; i++) file++;
         qDebug() << file->filename << Qt::endl;
-        file->command = finalCommand->document()->toPlainText() + " -i " + file->filename + " ";
+        file->command = finalCommand->document()->toPlainText();
     }
 }
 

@@ -133,7 +133,7 @@ void FFOptionsCombo::write(QJsonObject &json){
     json["baseCommand"] = baseCommand;
     json["hint"] = hint;
     QJsonArray optionArray;
-    for(int i = 2; i < sum; i++){
+    for(int i = 0; i < sum; i++){
         QJsonObject item;
         item["display"] = display_name[i];
         item["isBase"] = commands[i].first;

@@ -81,12 +81,15 @@ void MainWindow::beginProcess(){
         for(auto &x: TabChoseFile->fileToChoose->filelist){
             QString command_of_file = x.command;
             command_of_file.erase(command_of_file.constBegin(), command_of_file.constBegin()+20);
-            QString command_now = "ffmpeg -y -hide_banner";
+            QString command_now = "ffmpeg -y -hide_banner ";
             if(x.extract){
-                command_now += " -ss " + x.beg_time.toString("hh:mm:ss.zzz") + " " + x.end_time.toString("hh:mm:ss.zzz") + " ";
+                command_now += " -ss " + x.beg_time.toString("hh:mm:ss.zzz") + " -to " + x.end_time.toString("hh:mm:ss.zzz") + " ";
             }
-            command_now += "-i \" " + x.filename + "\" " + command_of_file;
+            command_now += "-i \"" + x.filename + "\"" + command_of_file;
             commands.push_back(command_now);
         }
+    }
+    for(auto &x: commands){
+        qDebug() << x << Qt::endl;
     }
 }
