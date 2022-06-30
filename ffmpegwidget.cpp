@@ -256,11 +256,17 @@ void ffmpegWidget::generate(){
             int lst = out_file.lastIndexOf(".");
             out_file.erase(out_file.constBegin()+lst, out_file.constBegin()+out_file.length());
             srand(time(0));
-            out_file += "_" + QString::number(rand()%10);
+            out_file += "_out";
             qDebug() << out_file << Qt::endl;
             fileName->setText(out_file);
 
         }
+    }
+    if(outputFormat->chooseList->currentIndex() <= 1){
+        out_file += ".mp4";
+    }
+    else{
+        out_file += "." + outputFormat->getCommand();
     }
     QString command = "ffmpeg -hide_banner ";
     for(int i = 1; i < options.size(); i++){
@@ -270,30 +276,17 @@ void ffmpegWidget::generate(){
             command = command + QString(" ");
         }
     }
+
     finalCommand->clear();
     finalCommand->document()->setPlainText(command);
 }
 
 void ffmpegWidget::apply(){
-    generate();
+    if(finalCommand->document()->toPlainText().contains("ffmpeg命令") )generate();
     int cnt = fileToChoose->currentIndex();
     if( cnt == 0 || (cnt == 1 && fileTab->fileToChoose->Qlist->currentRow() < 0)){
         for(auto iter = fileTab->fileToChoose->filelist.begin(); iter != fileTab->fileToChoose->filelist.end(); iter++){
-            QString out_name = "";
-            if(fileName->text().length() == 0){
-                out_name = iter->filename;
-                out_name.erase(out_name.constBegin() + iter->filename.lastIndexOf("."), out_name.constEnd());
-            }
-            else{
-                out_name = fileName->text();
-            }
-            if(outputFormat->chooseList->currentIndex() <= 1){
-                out_name += ".mp4";
-            }
-            else{
-                out_name += "." + outputFormat->getCommand();
-            }
-            iter->command = finalCommand->document()->toPlainText() + " " + out_name;
+            iter->command = finalCommand->document()->toPlainText() + " ";
         }
     }
     if(cnt == 1){

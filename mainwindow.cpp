@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QTime>
 #include <vector>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -60,7 +61,7 @@ void MainWindow::beginProcess(){
             for(auto &x: TabChoseFile->fileToChoose->filelist){
                 stream << "file \" " << x.filename << "\" " << Qt::endl;
             }
-             commands[0] = "ffmpeg -y -hide_banner -f concat -i \"merge_filelist.txt\" ";
+             commands[0] = "ffmpeg -f concat -i \"merge_filelist.txt\" ";
             if(TabSetFFmpeg->finalCommand->document()->toPlainText().contains("ffmpeg命令")){
                  commands[0] += " -c copy 合成的视频" + QTime::currentTime().toString() + ".mp4";
             }
@@ -81,15 +82,19 @@ void MainWindow::beginProcess(){
         for(auto &x: TabChoseFile->fileToChoose->filelist){
             QString command_of_file = x.command;
             command_of_file.erase(command_of_file.constBegin(), command_of_file.constBegin()+20);
-            QString command_now = "ffmpeg -y -hide_banner ";
+            QString command_now = "ffmpeg ";
             if(x.extract){
                 command_now += " -ss " + x.beg_time.toString("hh:mm:ss.zzz") + " -to " + x.end_time.toString("hh:mm:ss.zzz") + " ";
             }
-            command_now += "-i \"" + x.filename + "\"" + command_of_file;
+            command_now += "-i \"" + x.filename + "\" " + command_of_file;
             commands.push_back(command_now);
         }
     }
     for(auto &x: commands){
-        qDebug() << x << Qt::endl;
+        QProcess *myProcess = new QProcess(this);
+        std::cout << x.toStdString() << std::endl;
+        myProcess->startCommand(x);
+        myProcess->waitForFinished(3000000);
+        QString output(myProcess->readAllStandardOutput());
     }
 }
