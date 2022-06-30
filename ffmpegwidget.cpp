@@ -121,6 +121,24 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
     currentnum=1;
     connect(loadPreset,&QPushButton::clicked,this,&ffmpegWidget::Load);
 
+    QDir dir;
+    if(!dir.exists("./preset"))
+    {
+        dir.mkdir("./preset");
+    }
+    dir.setPath("./preset");
+    QString path=dir.path()+"/default.json";
+    dir.cdUp();
+    dir.cdUp();
+    QFile file(dir.absolutePath()+"/VCut/default.json");
+    file.copy(path);
+    presetToChoose->addItem("default.json");
+
+    connect(presetToChoose,&QComboBox::currentTextChanged,this,[this]()
+    {
+       loadFromFile("./preset/"+presetToChoose->currentText());
+    });
+
     connect(fileTab->fileToChoose, &Filelist::contentChanged, this, [&](){
         //merge
         if(fileTab->fileToChoose->mergeOrSingle->isChecked()){
@@ -269,16 +287,24 @@ void ffmpegWidget::apply(){
 }
 
 void ffmpegWidget::Load(){
-    QString filename=presetToChoose->currentText();
+    QString filename=QFileDialog::getOpenFileName(this,tr("打开json文件"),"");
     this->loadFromFile(filename);
 }
 
 void ffmpegWidget::save(){
-    QString savename="./preset";
+    QString savename="./preset/mypreset";
     savename+=QString::number(num);
     savename+=".json";
     this->saveToFile(savename);
-    presetToChoose->addItem(savename);
-    presetToChoose->setCurrentIndex(num-1);
+    QString filename="mypreset";
+    filename+=QString::number(num);
+    filename+=".json";
+    presetToChoose->addItem(filename);
+    presetToChoose->setCurrentIndex(num);
     num++;
+}
+
+ffmpegWidget::~ffmpegWidget()
+{
+    delete topLayout;
 }

@@ -120,6 +120,10 @@ void FFOptionsCombo::read(const QJsonObject &json){
                 addItem(json["isBase"].toBool(), json["display"].toString(), json["command"].toString());
         }
     }
+    if (json.contains("state") && json["state"].isDouble()){
+        int s = json["state"].toInt();
+        setInside(s);
+    }
 }
 void FFOptionsCombo::write(QJsonObject &json){
     json["name"] = name;
@@ -133,5 +137,6 @@ void FFOptionsCombo::write(QJsonObject &json){
         item["command"] = commands[i].second;
         optionArray.append(item);
     }
+    json["state"]=getCurrentState();
     json["commands"] = optionArray;
 }

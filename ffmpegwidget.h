@@ -43,6 +43,8 @@ public:
     int num;
     int currentnum;
 
+    ~ffmpegWidget();
+
 public slots:
     void Load();
     void save();
