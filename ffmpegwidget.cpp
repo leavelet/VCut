@@ -133,6 +133,8 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
     QFile file(dir.absolutePath()+"/VCut/default.json");
     file.copy(path);
     presetToChoose->addItem("default.json");
+    loadFromFile("./preset/default.json");
+    generate();
 
     connect(presetToChoose,&QComboBox::currentTextChanged,this,[this]()
     {
