@@ -74,7 +74,7 @@ void FFOptionsCheck::read(const QJsonObject &json){
             setInside(0);
         }
     }
-    init();
+    //init();
 }
 void FFOptionsCheck::write(QJsonObject &json){
     json["name"] = name;

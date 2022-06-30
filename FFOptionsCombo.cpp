@@ -70,7 +70,6 @@ void FFOptionsCombo::addItem(bool fromBase, QString display, QString command){
     display_name.push_back(display);
     commands.push_back(std::make_pair(fromBase, command));
     chooseList->addItem(display_name[sum-1]);
-    chooseList->setCurrentIndex(sum-1);
 }
 
 QString FFOptionsCombo::getCommand(){
@@ -109,15 +108,19 @@ void FFOptionsCombo::read(const QJsonObject &json){
         baseCommand = json["baseCommand"].toString();
     if (json.contains("hint") && json["hint"].isString())
         hint = json["hint"].toString();
-    init();
+    //init();
+    chooseList->clear();
+    commands.clear();
+    display_name.clear();
+    sum=0;
     if (json.contains("commands") && json["commands"].isArray()) {
         QJsonArray optionArray = json["commands"].toArray();
         for (int Index = 0; Index < optionArray.size(); ++Index) {
             QJsonObject optionObject = optionArray[Index].toObject();
-            if(    optionObject.contains("isBase") && json["isBase"].isBool()
-                && optionObject.contains("command") && json["command"].isString()
-                && optionObject.contains("display") && json["display"].isString())
-                addItem(json["isBase"].toBool(), json["display"].toString(), json["command"].toString());
+            if(    optionObject.contains("isBase") && optionObject["isBase"].isBool()
+                && optionObject.contains("command") && optionObject["command"].isString()
+                && optionObject.contains("display") && optionObject["display"].isString())
+                addItem(optionObject["isBase"].toBool(), optionObject["display"].toString(), optionObject["command"].toString());
         }
     }
     if (json.contains("state") && json["state"].isDouble()){
