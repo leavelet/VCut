@@ -61,7 +61,7 @@ void FFOptionsCheck::read(const QJsonObject &json){
         command_checked = json["command_checked"].toString();
 
     if (json.contains("command_unchecked") && json["command_unchecked"].isString())
-        command_checked = json["command_unchecked"].toString();
+        command_unchecked = json["command_unchecked"].toString();
 
     if (json.contains("state") && json["state"].isBool()){
         bool s = json["state"].toBool();
@@ -80,7 +80,7 @@ void FFOptionsCheck::write(QJsonObject &json){
     json["name"] = name;
     json["command_checked"] = command_checked;
     json["command_unchecked"] = command_unchecked;
-    json["state"] = state == 1 ? true : false;
+    json["state"] = getCurrentState();
 }
 
 
