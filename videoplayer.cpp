@@ -97,6 +97,7 @@ void VideoPlayer::open(){
     total_time = player->duration();
     endtime = ms_to_Qtime(player->duration());
     timer->start(500);
+    this->audioOutput.setVolume(0);
 }
 
 void VideoPlayer::playPauseSwitch(){
