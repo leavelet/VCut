@@ -67,9 +67,11 @@ void FFOptionsCheck::read(const QJsonObject &json){
         bool s = json["state"].toBool();
         if(s){
             state = 1;
+            setInside(1);
         }
         else{
             state = 0;
+            setInside(0);
         }
     }
     init();
