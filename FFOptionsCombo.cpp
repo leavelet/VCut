@@ -74,11 +74,11 @@ void FFOptionsCombo::addItem(bool fromBase, QString display, QString command){
 
 QString FFOptionsCombo::getCommand(){
     int now = chooseList->currentIndex();
-    if(now <= 1) return "";
+    if(now < 0) return "";
     else {
         if(commands[now].first){
             QString ret;
-            if(baseCommand.endsWith('='))
+            if(baseCommand.endsWith('=') || baseCommand.endsWith("."))
                  ret = baseCommand + commands[now].second;
             else
                  ret = baseCommand + " " + commands[now].second;

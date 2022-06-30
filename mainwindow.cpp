@@ -40,6 +40,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::beginProcess(){
+    TabSetFFmpeg->apply();
     if(TabChoseFile->fileToChoose->filelist.size() == 0){
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
@@ -90,11 +91,9 @@ void MainWindow::beginProcess(){
             commands.push_back(command_now);
         }
     }
+
     for(auto &x: commands){
-        QProcess *myProcess = new QProcess(this);
-        std::cout << x.toStdString() << std::endl;
-        myProcess->startCommand(x);
-        myProcess->waitForFinished(3000000);
-        QString output(myProcess->readAllStandardOutput());
+        x = "./ffmpeg/bin/" + x;
+        system(x.toStdString().c_str());
     }
 }

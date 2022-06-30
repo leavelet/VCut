@@ -248,25 +248,15 @@ void ffmpegWidget::saveToFile(QString Filename){
     }
 }
 void ffmpegWidget::generate(){
-    QString out_file = "";
-    if(fileName->text().length() != 0) out_file = fileName->text();
-    else{
+    if(fileName->text().length() == 0 ){
         if(fileToChoose->currentIndex() == 0 && fileTab->fileToChoose->filelist.size() != 0){
-            out_file = fileTab->fileToChoose->filelist.begin()->filename;
+            QString out_file = fileTab->fileToChoose->filelist.begin()->filename;
             int lst = out_file.lastIndexOf(".");
             out_file.erase(out_file.constBegin()+lst, out_file.constBegin()+out_file.length());
             srand(time(0));
             out_file += "_out";
-            qDebug() << out_file << Qt::endl;
             fileName->setText(out_file);
-
         }
-    }
-    if(outputFormat->chooseList->currentIndex() <= 1){
-        out_file += ".mp4";
-    }
-    else{
-        out_file += "." + outputFormat->getCommand();
     }
     QString command = "ffmpeg -hide_banner ";
     for(int i = 1; i < options.size(); i++){
@@ -276,7 +266,6 @@ void ffmpegWidget::generate(){
             command = command + QString(" ");
         }
     }
-
     finalCommand->clear();
     finalCommand->document()->setPlainText(command);
 }
@@ -286,7 +275,7 @@ void ffmpegWidget::apply(){
     int cnt = fileToChoose->currentIndex();
     if( cnt == 0 || (cnt == 1 && fileTab->fileToChoose->Qlist->currentRow() < 0)){
         for(auto iter = fileTab->fileToChoose->filelist.begin(); iter != fileTab->fileToChoose->filelist.end(); iter++){
-            iter->command = finalCommand->document()->toPlainText() + " ";
+            iter->command = finalCommand->document()->toPlainText() + " " + fileName->text() + outputFormat->getCommand();
         }
     }
     if(cnt == 1){
@@ -294,15 +283,19 @@ void ffmpegWidget::apply(){
         int x = fileTab->fileToChoose->Qlist->currentRow();
         auto file = fileTab->fileToChoose->filelist.begin();
         for(int i = 1; i <= x; i++) file++;
-        qDebug() << file->filename << Qt::endl;
-        file->command = finalCommand->document()->toPlainText();
+        auto cmd = file->filename;
+        cmd.erase(cmd.constBegin() + cmd.lastIndexOf("."), cmd.constEnd());
+        cmd+="_out" + outputFormat->getCommand();
+        file->command = finalCommand->document()->toPlainText() + " \"" + cmd + "\"";
     }
     else{
         //change cnt-2
         auto file = fileTab->fileToChoose->filelist.begin();
         for(int i = 1; i <= cnt-2; i++) file++;
-        qDebug() << file->filename << Qt::endl;
-        file->command = finalCommand->document()->toPlainText();
+        auto cmd = file->filename;
+        cmd.erase(cmd.constBegin() + cmd.lastIndexOf("."), cmd.constEnd());
+        cmd+="_out" + outputFormat->getCommand();
+        file->command = finalCommand->document()->toPlainText() + " \"" + cmd + "\"";
     }
 }
 

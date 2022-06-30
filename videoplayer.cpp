@@ -95,6 +95,7 @@ void VideoPlayer::open(){
     begtime = QTime(0, 0);
     total_time = player->duration();
     endtime = ms_to_Qtime(player->duration());
+    end_time_label->setText(endtime.toString("hh:mm:ss:zzz"));
     timer->start(500);
     extract = false;
 }
