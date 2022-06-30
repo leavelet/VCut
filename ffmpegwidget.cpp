@@ -127,12 +127,22 @@ ffmpegWidget::ffmpegWidget(ChooseFile* _fileTab, QWidget *parent)
         dir.mkdir("./preset");
     }
     dir.setPath("./preset");
-    QString path=dir.path()+"/default.json";
+    QString path=dir.absolutePath();
     dir.cdUp();
     dir.cdUp();
-    QFile file(dir.absolutePath()+"/VCut/default.json");
-    file.copy(path);
-    presetToChoose->addItem("default.json");
+    dir.cd("Vcut/preset");
+    QFileInfoList list=dir.entryInfoList();
+    int count=list.count();
+    for(int i=0;i<count;i++)
+    {
+        QFileInfo jsonfile=list.at(i);
+        QString name=jsonfile.fileName();
+        if(name=="."||name=="..")continue;
+        QFile file(jsonfile.absoluteFilePath());
+        file.copy(path+"/"+name);
+        presetToChoose->addItem(name);
+    }
+    presetToChoose->setCurrentIndex(presetToChoose->findText("default.json"));
     loadFromFile("./preset/default.json");
     generate();
 
