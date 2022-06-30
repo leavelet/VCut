@@ -98,6 +98,7 @@ void VideoPlayer::open(){
     endtime = ms_to_Qtime(player->duration());
     end_time_label->setText(endtime.toString("hh:mm:ss:zzz"));
     timer->start(500);
+    this->audioOutput.setVolume(0);
     extract = false;
 }
 
