@@ -13,6 +13,7 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     changeState = new QPushButton("暂停/播放",this);
     addToList = new QPushButton("添加到队列",this);
     muteBtn = new QCheckBox("静音", this);
+    muteBtn->setChecked(1);
     currentTime = new QLabel("00:00:00", this);
     preciseAdjustBtn = new QCheckBox("精细调节", this);
     beginTimeBtn = new QPushButton("设置为开始时间", this);
